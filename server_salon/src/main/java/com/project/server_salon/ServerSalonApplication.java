@@ -28,10 +28,8 @@ public class ServerSalonApplication {
                     .authorizeRequests()
                     .antMatchers(HttpMethod.POST, "/models/add").hasRole("MANAGER")
                     .antMatchers(HttpMethod.POST, "/models/delete").hasRole("MANAGER")
-                    .antMatchers(HttpMethod.GET, "/models/getAll").authenticated()
                     .antMatchers(HttpMethod.POST, "/engines/add").hasRole("MANAGER")
                     .antMatchers(HttpMethod.POST, "/engines/delete").hasRole("MANAGER")
-                    .antMatchers(HttpMethod.GET, "/engines/getAll").authenticated()
                     .antMatchers(HttpMethod.POST, "/login/*").permitAll()
                     .anyRequest().authenticated();
         }
