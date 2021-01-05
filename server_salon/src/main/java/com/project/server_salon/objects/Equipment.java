@@ -2,12 +2,12 @@ package com.project.server_salon.objects;
 
 public class Equipment {
     int id_wyposazenia;
-    String typ_wyposazenia;
+    int typ_wyposazenia;
     String nazwa;
     String opis;
     double cena;
 
-    public Equipment(int id_wyposazenia, String typ_wyposazenia, String nazwa, String opis, double cena){
+    public Equipment(int id_wyposazenia, int typ_wyposazenia, String nazwa, String opis, double cena){
         this.id_wyposazenia = id_wyposazenia;
         this.typ_wyposazenia = typ_wyposazenia;
         this.nazwa = nazwa;
@@ -19,9 +19,9 @@ public class Equipment {
 
     public void setId_wyposazenia(int id_wyposazenia) { this.id_wyposazenia = id_wyposazenia; }
 
-    public String getTyp_wyposazenia() { return typ_wyposazenia; }
+    public int getTyp_wyposazenia() { return typ_wyposazenia; }
 
-    public void setTyp_wyposazenia(String typ_wyposazenia) {this.typ_wyposazenia = typ_wyposazenia; }
+    public void setTyp_wyposazenia(int typ_wyposazenia) {this.typ_wyposazenia = typ_wyposazenia; }
 
     public String getNazwa() { return nazwa; }
 

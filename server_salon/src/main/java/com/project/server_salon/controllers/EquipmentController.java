@@ -1,18 +1,16 @@
 package com.project.server_salon.controllers;
 
 import com.project.server_salon.objects.Equipment;
+import com.project.server_salon.objects.EquipmentInVersion;
 import com.project.server_salon.objects.Version;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
 @RequestMapping(path ="/equipment")
 @RestController
@@ -48,7 +46,7 @@ public class EquipmentController {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     equipments.add(new Equipment(rs.getInt("id_wyposazenia"),
-                            rs.getString("typ_wyposazenia"),
+                            rs.getInt("typ_wyposazenia"),
                             rs.getString("nazwa"),
                             rs.getString("opis"),
                             rs.getDouble("cena")));
@@ -112,7 +110,7 @@ public class EquipmentController {
                         ResultSet rs2 = stmt2.executeQuery();
                         ArrayList<Equipment> eqArr = new ArrayList<>();
                         while (rs2.next()){
-                            eqArr.add(new Equipment(rs2.getInt("id_wyposazenia"), rs2.getString("typ_wyposazenia"), rs2.getString("nazwa"), rs2.getString("opis"), rs2.getDouble("cena")));
+                            eqArr.add(new Equipment(rs2.getInt("id_wyposazenia"), rs2.getInt("typ_wyposazenia"), rs2.getString("nazwa"), rs2.getString("opis"), rs2.getDouble("cena")));
                         }
                         rs2.close();
                         stmt2.close();
@@ -120,7 +118,7 @@ public class EquipmentController {
                         versions.add(ver);
                     }
                     catch (SQLException e){
-                        System.out.println(e.getMessage());
+                        System.out.println(e.getMessage() + ", " + e.getCause());
                         System.exit(1);
                     }
                 }
@@ -135,5 +133,80 @@ public class EquipmentController {
         return versions;
     }
 
+    @PostMapping(path = "/addNewVersion")
+    public void addNewVersion(@RequestBody Map<String, Object> request){
+        String name;
+        List<Map<String, Integer>> equipmentResponseList;
+        List<EquipmentInVersion> equipmentList = new ArrayList<>();
+        int id;
+        try{
+            name = request.get("name").toString();
+            equipmentResponseList = (List<Map<String, Integer>>) request.get("equipment");
+            for(Map<String, Integer> item: equipmentResponseList){
+                EquipmentInVersion eq = new EquipmentInVersion(item.get("id_wyposazenia"), item.get("typ_wyposazenia"));
+                equipmentList.add(eq);
+            }
+        }
+        catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad shape of request" + e.getMessage());
+        }
+
+        if(isValidInput(equipmentList)){
+            try{
+                if(!getConn()){
+                    throw new Exception();
+                }
+                c.setAutoCommit(false);
+                PreparedStatement stmt = c.prepareStatement("Insert INTO salon.wersje_wyposazenia values (default, ?, 0)");
+                stmt.setString(1, name);
+                int i = stmt.executeUpdate();
+                if(i == 1){
+                    stmt = c.prepareStatement("SELECT id_wersje_wyposazenia from salon.wersje_wyposazenia where nazwa=?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                    stmt.setString(1, name);
+                    ResultSet rs = stmt.executeQuery();
+                    if(rs.next()){
+                        id = rs.getInt("id_wersje_wyposazenia");
+
+                        for(EquipmentInVersion eq:equipmentList){
+                            stmt = c.prepareStatement("INSERT INTO salon.wyposazenie_w_wersji values (default, ?, ?)");
+                            stmt.setInt(1, id);
+                            stmt.setInt(2, eq.getId_wyposazenia());
+                            int j = stmt.executeUpdate();
+                            if(j!=1){
+                                c.rollback();
+                                throw new ResponseStatusException(HttpStatus.CONFLICT, "Problem with inserting equipment");
+                            }
+
+                        }
+                        rs.close();
+                        stmt.close();
+                        c.commit();
+                    }
+                    else{
+                        c.rollback();
+                    }
+
+                }
+                else{
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Version already exists");
+                }
+
+            }
+            catch (Exception e){
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e.getCause());
+            }
+        }
+
+
+
+    }
+
+    boolean isValidInput(List<EquipmentInVersion> equipment){
+        Set<Integer> typesOfEquipment = new HashSet<>();
+        for(EquipmentInVersion eq: equipment){
+            typesOfEquipment.add(eq.getTyp_wyposazenia());
+        }
+        return equipment.size() == typesOfEquipment.size();
+    }
 
 }

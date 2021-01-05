@@ -26,12 +26,12 @@ public class ServerSalonApplication {
             http.csrf().disable()
                     .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
                     .authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/models/add").hasRole("MANAGER")
-                    .antMatchers(HttpMethod.POST, "/models/delete").hasRole("MANAGER")
-                    .antMatchers(HttpMethod.POST, "/engines/add").hasRole("MANAGER")
-                    .antMatchers(HttpMethod.POST, "/engines/delete").hasRole("MANAGER")
-                    .antMatchers(HttpMethod.POST, "/login/*").permitAll()
-                    .anyRequest().authenticated();
+                    //.antMatchers(HttpMethod.POST, "/models/add").hasRole("MANAGER")
+                    //.antMatchers(HttpMethod.POST, "/models/delete").hasRole("MANAGER")
+                    //.antMatchers(HttpMethod.POST, "/engines/add").hasRole("MANAGER")
+                    //.antMatchers(HttpMethod.POST, "/engines/delete").hasRole("MANAGER")
+                    //.antMatchers(HttpMethod.POST, "/login/*").permitAll()
+                    .anyRequest().permitAll();
         }
     }
 

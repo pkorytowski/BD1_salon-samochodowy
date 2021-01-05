@@ -61,7 +61,7 @@ public class EnginesController {
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
-                System.exit(1);
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error connect with db");
             }
         }
         return engines;
