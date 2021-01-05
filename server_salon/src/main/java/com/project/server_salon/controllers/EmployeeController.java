@@ -62,7 +62,7 @@ public class EmployeeController {
         return employees;
     }
 
-    @PostMapping(path = "/add")
+    @PostMapping("/add")
     public void addEmployee(@RequestBody Map<String, String> request){
        String name, surname, position, email, password;
         try{
@@ -73,7 +73,7 @@ public class EmployeeController {
            password = request.get("password");
        }
        catch (Exception e){
-           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cause description here");
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form");
        }
 
         try{
@@ -88,7 +88,7 @@ public class EmployeeController {
             stmt.setString(5, password);
             int i=stmt.executeUpdate();
             if(i!=1){
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User already exists");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
             }
         }
         catch (Exception e){
@@ -97,7 +97,7 @@ public class EmployeeController {
 
     }
 
-    @PostMapping(path = "/delete")
+    @PostMapping("/delete")
     public void deleteEmployee(@RequestBody Map<String, Integer> request){
         int id_pracownika;
         try{
@@ -115,7 +115,7 @@ public class EmployeeController {
             stmt.setInt(1, id_pracownika);
             int i=stmt.executeUpdate();
             if(i!=1){
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not exist");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "User does not exist");
             }
         }
         catch (Exception e){

@@ -93,7 +93,7 @@ public class EquipmentController {
     public ArrayList<Version> getVersions(){
         ArrayList<Version> versions = new ArrayList<>();
         if(!getConn()){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cause description here");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot connect to db.");
         }
 
         if (c!=null){
