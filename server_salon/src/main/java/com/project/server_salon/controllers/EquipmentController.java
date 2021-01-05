@@ -103,7 +103,8 @@ public class EquipmentController {
                 while (rs.next()) {
                     Version ver = new Version(rs.getInt("id_wersje_wyposazenia"),
                                              rs.getString("nazwa"),
-                                             rs.getDouble("cena"));
+                                             rs.getDouble("cena"),
+                                             rs.getInt("aktywna"));
                     try{
                         PreparedStatement stmt2 = c.prepareStatement("SELECT * FROM salon.wyposazenie_widok where id_wyposazenia in (select w.id_wyposazenia from salon.wyposazenie_w_wersji w where w.id_wersje_wyposazenia=?)", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                         stmt2.setInt(1, ver.getId_wersje_wyposazenia());
@@ -157,7 +158,7 @@ public class EquipmentController {
                     throw new Exception();
                 }
                 c.setAutoCommit(false);
-                PreparedStatement stmt = c.prepareStatement("Insert INTO salon.wersje_wyposazenia values (default, ?, 0)");
+                PreparedStatement stmt = c.prepareStatement("Insert INTO salon.wersje_wyposazenia values (default, ?, 0, 1)");
                 stmt.setString(1, name);
                 int i = stmt.executeUpdate();
                 if(i == 1){
@@ -200,6 +201,7 @@ public class EquipmentController {
 
 
     }
+
 
     boolean isValidInput(List<EquipmentInVersion> equipment){
         Set<Integer> typesOfEquipment = new HashSet<>();

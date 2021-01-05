@@ -6,12 +6,14 @@ public class Version {
     int id_wersje_wyposazenia;
     String nazwa;
     double cena;
+    int aktywna;
     ArrayList<Equipment> equipmentList;
 
-    public Version(int id_wersje_wyposazenia, String nazwa, double cena){
+    public Version(int id_wersje_wyposazenia, String nazwa, double cena, int aktywna){
         this.id_wersje_wyposazenia = id_wersje_wyposazenia;
         this.nazwa = nazwa;
         this.cena = cena;
+        this.aktywna = aktywna;
     }
 
     public int getId_wersje_wyposazenia() { return id_wersje_wyposazenia; }
@@ -25,6 +27,10 @@ public class Version {
     public double getCena() { return cena; }
 
     public void setCena(double cena) { this.cena = cena; }
+
+    public int getAktywna() { return aktywna; }
+
+    public void setAktywna(int aktywna) { this.aktywna = aktywna; }
 
     public ArrayList<Equipment> getEquipmentList() { return equipmentList; }
 
