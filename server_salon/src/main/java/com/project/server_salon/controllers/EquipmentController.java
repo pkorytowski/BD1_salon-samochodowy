@@ -128,7 +128,6 @@ public class EquipmentController {
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
-                System.exit(1);
             }
         }
         return versions;
@@ -177,6 +176,57 @@ public class EquipmentController {
             }
         }
         return versions;
+    }
+
+    @PostMapping(path = "/getVersion")
+    public Version getVersion(@RequestBody Map<String, String> request){
+        Version version = null;
+        int id;
+        try{
+            id = Integer.parseInt(request.get("id"));
+        }
+        catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad shape of request" + e.getMessage());
+        }
+
+        if(!getConn()){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot connect to db.");
+        }
+
+        if (c!=null) {
+            try{
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.wersje_wyposazenia where id_wersje_wyposazenia=?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                stmt.setInt(1, id);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    version = new Version(rs.getInt("id_wersje_wyposazenia"),
+                            rs.getString("nazwa"),
+                            rs.getDouble("cena"),
+                            rs.getInt("aktywna"));
+                    try{
+                        PreparedStatement stmt2 = c.prepareStatement("SELECT * FROM salon.wyposazenie_widok where id_wyposazenia in (select w.id_wyposazenia from salon.wyposazenie_w_wersji w where w.id_wersje_wyposazenia=?)", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                        stmt2.setInt(1, version.getId_wersje_wyposazenia());
+                        ResultSet rs2 = stmt2.executeQuery();
+                        ArrayList<Equipment> eqArr = new ArrayList<>();
+                        while (rs2.next()){
+                            eqArr.add(new Equipment(rs2.getInt("id_wyposazenia"), rs2.getInt("typ_wyposazenia"), rs2.getString("nazwa"), rs2.getString("opis"), rs2.getDouble("cena")));
+                        }
+                        rs2.close();
+                        stmt2.close();
+                        version.setEquipmentList(eqArr);
+                    }
+                    catch (SQLException e){
+                        System.out.println(e.getMessage() + ", " + e.getCause());
+                    }
+                }
+                rs.close();
+                stmt.close();
+            }
+            catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return version;
     }
 
     @PostMapping(path = "/addNewVersion")
@@ -307,7 +357,6 @@ public class EquipmentController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e.getCause());
         }
     }
-
 
     boolean isValidInput(List<EquipmentInVersion> equipment){
         Set<Integer> typesOfEquipment = new HashSet<>();
