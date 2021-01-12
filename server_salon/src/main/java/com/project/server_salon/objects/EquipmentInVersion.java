@@ -19,8 +19,3 @@ public class EquipmentInVersion {
 
 }
 
-
-/*
-Do czego słuzye metoda head
-Gdzie zapisać dane po stronie klienta
- */

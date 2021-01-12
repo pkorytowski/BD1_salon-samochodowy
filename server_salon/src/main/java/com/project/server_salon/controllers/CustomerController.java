@@ -15,7 +15,6 @@ import java.util.Objects;
 @RequestMapping(path="/customers")
 @RestController
 public class CustomerController {
-    ArrayList<Customer> customers = new ArrayList<>();
     Connection c = null;
 
     @Autowired
@@ -33,11 +32,9 @@ public class CustomerController {
         return true;
     }
 
-
-
-
     @GetMapping("/getAll")
     public ArrayList<Customer> getAll(){
+        ArrayList<Customer> customers = new ArrayList<>();
         if(!getConn()){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
         }
@@ -222,8 +219,5 @@ public class CustomerController {
         }
 
     }
-
-
-
 
 }

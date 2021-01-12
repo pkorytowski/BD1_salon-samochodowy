@@ -16,7 +16,7 @@ import java.util.Objects;
 @RequestMapping(path = "/engines")
 @RestController
 public class EnginesController {
-    ArrayList<Engine> engines = new ArrayList<>();
+
     Connection c = null;
 
     @Autowired
@@ -36,7 +36,7 @@ public class EnginesController {
 
     @GetMapping("/getAll")
     public ArrayList<Engine> getAll(){
-
+        ArrayList<Engine> engines = new ArrayList<>();
         if(!getConn()){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cause description here");
         }

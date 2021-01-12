@@ -15,7 +15,6 @@ import java.util.Objects;
 @RequestMapping(path="/cars")
 @RestController
 public class CarsController {
-    ArrayList<Car> cars = new ArrayList<>();
     Connection c = null;
 
     @Autowired
@@ -35,20 +34,23 @@ public class CarsController {
 
     @GetMapping("/getAll")
     public ArrayList<Car> getAll(){
-
+        ArrayList<Car> cars = new ArrayList<>();
         if(!getConn()){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error with connection with db");
         }
 
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_samochodu, id_silnik, id_wersje_wyposazenia, id_modelu, rok_modelowy, cena, aktywny FROM salon.samochody", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.samochody_widok", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     cars.add(new Car(rs.getInt("id_samochodu"),
                             rs.getInt("id_silnik"),
+                            rs.getString("silnik"),
                             rs.getInt("id_wersje_wyposazenia"),
+                            rs.getString("wersja"),
                             rs.getInt("id_modelu"),
+                            rs.getString("model"),
                             rs.getInt("rok_modelowy"),
                             rs.getDouble("cena"),
                             rs.getInt("aktywny")));
@@ -66,20 +68,23 @@ public class CarsController {
 
     @GetMapping("/getActive")
     public ArrayList<Car> getActive(){
-
+        ArrayList<Car> cars = new ArrayList<>();
         if(!getConn()){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error with connection with db");
         }
 
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_samochodu, id_silnik, id_wersje_wyposazenia, id_modelu, rok_modelowy, cena, aktywny FROM salon.samochody where aktywny=1", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.samochody_widok where aktywny=1", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     cars.add(new Car(rs.getInt("id_samochodu"),
                             rs.getInt("id_silnik"),
+                            rs.getString("silnik"),
                             rs.getInt("id_wersje_wyposazenia"),
+                            rs.getString("wersja"),
                             rs.getInt("id_modelu"),
+                            rs.getString("model"),
                             rs.getInt("rok_modelowy"),
                             rs.getDouble("cena"),
                             rs.getInt("aktywny")));
@@ -104,7 +109,6 @@ public class CarsController {
             id_version = Integer.parseInt(request.get("id_version"));
             id_model = Integer.parseInt(request.get("id_model"));
             year = Integer.parseInt(request.get("year"));
-
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form");
@@ -134,7 +138,7 @@ public class CarsController {
 
         int id_samochodu, state;
         try{
-            id_samochodu = Integer.parseInt(request.get("id_samochodu"));
+            id_samochodu = Integer.parseInt(request.get("id_car"));
             state = Integer.parseInt(request.get("state"));
         }
         catch (Exception e){
@@ -163,7 +167,7 @@ public class CarsController {
 
         int id_samochodu;
         try{
-            id_samochodu = Integer.parseInt(request.get("id_samochodu"));
+            id_samochodu = Integer.parseInt(request.get("id_car"));
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad shape of request" + e.getMessage());
@@ -171,18 +175,20 @@ public class CarsController {
 
         try{
             if(!getConn()){
-                throw new Exception();
+                throw new SQLException();
             }
             PreparedStatement stmt = c.prepareStatement("DELETE FROM salon.samochody where id_samochodu=?");
             stmt.setInt(1, id_samochodu);
             int i = stmt.executeUpdate();
+            System.out.println(i);
                 if(i!=1){
-                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Car does not exists");
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Car does not exist");
                 }
             }
-        catch (Exception e){
+        catch (SQLException e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e.getCause());
         }
+        throw new ResponseStatusException(HttpStatus.OK);
     }
 
 

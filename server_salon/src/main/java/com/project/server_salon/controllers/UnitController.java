@@ -1,5 +1,6 @@
 package com.project.server_salon.controllers;
 
+import com.project.server_salon.objects.Car;
 import com.project.server_salon.objects.Unit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -15,7 +16,6 @@ import java.util.Objects;
 @RequestMapping(path ="/units")
 @RestController
 public class UnitController {
-    ArrayList<Unit> units = new ArrayList<>();
     Connection c;
 
     @Autowired
@@ -35,19 +35,29 @@ public class UnitController {
 
     @GetMapping("/getUnits")
     public ArrayList<Unit> getAll(){
-
+        ArrayList<Unit> units = new ArrayList<>();
         if(!getConn()){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error with connection with db");
         }
 
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_egzemplarza, id_samochodu, id_koloru, status, cena_wyjsciowa FROM salon.egzemplarz", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.egzemplarz_widok", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     units.add(new Unit(rs.getInt("id_egzemplarza"),
-                            rs.getInt("id_samochodu"),
                             rs.getInt("id_koloru"),
+                            rs.getString("kolor"),
+                            new Car(rs.getInt("id_samochodu"),
+                                    rs.getInt("id_silnik"),
+                                    rs.getString("silnik"),
+                                    rs.getInt("id_wersje_wyposazenia"),
+                                    rs.getString("wersja"),
+                                    rs.getInt("id_modelu"),
+                                    rs.getString("model"),
+                                    rs.getInt("rok_modelowy"),
+                                    rs.getDouble("cena"),
+                                    rs.getInt("aktywny")),
                             rs.getString("status"),
                             rs.getDouble("cena_wyjsciowa")));
                 }

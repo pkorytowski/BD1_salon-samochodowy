@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+
+
 @RequestMapping(path="/login")
 @RestController
 public class LoginController {
@@ -35,8 +37,8 @@ public class LoginController {
         return login(request, "ROLE_MANAGER");
     }
 
-    @PostMapping("/client")
-    public User loginClient(@RequestBody Map<String, String> request) {
+    @PostMapping("/customer")
+    public User loginCustomer(@RequestBody Map<String, String> request) {
         return login(request, "ROLE_CLIENT");
     }
 
@@ -82,6 +84,7 @@ public class LoginController {
                         User user = new User();
                         user.setUser(username);
                         user.setToken(token);
+                        user.setRole(role);
                         return user;
                     }
                     else{

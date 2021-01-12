@@ -1,16 +1,19 @@
 package com.project.server_salon.objects;
 
+
 public class Unit {
     int id_unit;
-    int id_car;
     int id_color;
+    String color;
+    Car car=null;
     String status;
     double value;
 
-    public Unit(int id_unit, int id_car, int id_color, String status, double value){
+    public Unit(int id_unit, int id_color, String color, Car car, String status, double value){
         this.id_unit = id_unit;
-        this.id_car = id_car;
+        this.car = car;
         this.id_color = id_color;
+        this.color = color;
         this.status = status;
         this.value = value;
     }
@@ -23,12 +26,12 @@ public class Unit {
         this.id_unit = id_unit;
     }
 
-    public int getId_car() {
-        return id_car;
+    public Car getCar() {
+        return car;
     }
 
-    public void setId_car(int id_car) {
-        this.id_car = id_car;
+    public void setCar(Car car) {
+        this.car = car;
     }
 
     public int getId_color() {
@@ -37,6 +40,14 @@ public class Unit {
 
     public void setId_color(int id_color) {
         this.id_color = id_color;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public String getStatus() {

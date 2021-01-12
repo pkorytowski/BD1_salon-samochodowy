@@ -3,17 +3,24 @@ package com.project.server_salon.objects;
 public class Car {
     int id_car;
     int id_engine;
+    String engine;
     int id_version;
+    String version;
     int id_model;
+    String model;
     int year;
     double value;
     int active;
 
-    public Car(int id_car, int id_engine, int id_version, int id_model, int year, double value, int active){
+    public Car(int id_car, int id_engine, String engine, int id_version,
+               String version, int id_model, String model, int year, double value, int active){
         this.id_car = id_car;
         this.id_engine = id_engine;
+        this.engine = engine;
         this.id_version = id_version;
+        this.version = version;
         this.id_model = id_model;
+        this.model = model;
         this.year = year;
         this.value = value;
         this.active = active;
@@ -35,6 +42,14 @@ public class Car {
         this.id_engine = id_engine;
     }
 
+    public String getEngine() {
+        return engine;
+    }
+
+    public void setEngine(String engine) {
+        this.engine = engine;
+    }
+
     public int getId_version() {
         return id_version;
     }
@@ -43,12 +58,28 @@ public class Car {
         this.id_version = id_version;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     public int getId_model() {
         return id_model;
     }
 
     public void setId_model(int id_model) {
         this.id_model = id_model;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
     }
 
     public int getYear() {

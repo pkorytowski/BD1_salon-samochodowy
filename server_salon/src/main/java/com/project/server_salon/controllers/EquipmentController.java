@@ -15,7 +15,7 @@ import java.util.*;
 @RequestMapping(path ="/equipment")
 @RestController
 public class EquipmentController {
-    ArrayList<Equipment> equipments = new ArrayList<>();
+
     Connection c = null;
 
     @Autowired
@@ -35,7 +35,7 @@ public class EquipmentController {
 
     @GetMapping(path = "/getAll")
     public ArrayList<Equipment> getAll(){
-
+        ArrayList<Equipment> equipments = new ArrayList<>();
         if(!getConn()){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cause description here");
         }

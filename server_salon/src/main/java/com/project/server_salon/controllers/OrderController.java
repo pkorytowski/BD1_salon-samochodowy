@@ -15,7 +15,7 @@ import java.util.Objects;
 @RequestMapping(path="/orders")
 @RestController
 public class OrderController {
-    ArrayList<Order> orders = new ArrayList<Order>();
+
     Connection c = null;
 
     @Autowired
@@ -35,6 +35,7 @@ public class OrderController {
 
     @GetMapping("/getAll")
     public ArrayList<Order> getAll(){
+        ArrayList<Order> orders = new ArrayList<Order>();
         if(!getConn()){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
         }

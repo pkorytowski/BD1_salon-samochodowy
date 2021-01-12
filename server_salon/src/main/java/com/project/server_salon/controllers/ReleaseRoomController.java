@@ -1,6 +1,6 @@
 package com.project.server_salon.controllers;
 
-import com.project.server_salon.objects.TestDrive;
+import com.project.server_salon.objects.Release;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -12,15 +12,16 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
-@RequestMapping(path="/testdrive")
+@RequestMapping(path="/release-room")
 @RestController
-public class TestDriveController {
+public class ReleaseRoomController {
+
     Connection c = null;
 
     @Autowired
     private Environment env;
 
-    public TestDriveController(){}
+    public ReleaseRoomController(){}
 
     public boolean getConn() {
         try{
@@ -33,20 +34,19 @@ public class TestDriveController {
     }
 
     @GetMapping("/getAll")
-    public ArrayList<TestDrive> getAll(){
-        ArrayList<TestDrive> testDrives = new ArrayList<>();
+    public ArrayList<Release> getAll(){
+        ArrayList<Release> releases = new ArrayList<>();
         if(!getConn()){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
         }
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_jazda_probna, id_pracownika, id_klienta, id_egzemplarza, data FROM salon.jazda_probna", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT id_pokoj_wydan, id_pracownika, id_zamowienia, data FROM salon.pokoj_wydan", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
-                    testDrives.add(new TestDrive(rs.getInt("id_jazda_probna"),
+                    releases.add(new Release(rs.getInt("id_pokoj_wydan"),
                             rs.getInt("id_pracownika"),
-                            rs.getInt("id_klienta"),
-                            rs.getInt("id_egzemplarza"),
+                            rs.getInt("id_zamowienia"),
                             rs.getTimestamp("data")));
                 }
                 rs.close();
@@ -56,12 +56,12 @@ public class TestDriveController {
                 System.out.println(e.getMessage());
             }
         }
-        return testDrives;
+        return releases;
     }
 
     @PostMapping("/getWithParam")
-    public ArrayList<TestDrive> getWithParam(@RequestBody Map<String, String> request){
-        ArrayList<TestDrive> testDrives = new ArrayList<>();
+    public ArrayList<Release> getWithParam(@RequestBody Map<String, String> request){
+        ArrayList<Release> releases = new ArrayList<>();
         int value;
         String key;
         try{
@@ -76,15 +76,14 @@ public class TestDriveController {
         }
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_jazda_probna, id_pracownika, id_klienta, id_egzemplarza, data FROM salon.jazda_probna where ? = ?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT id_pokoj_wydan, id_pracownika, id_zamowienia, data FROM salon.pokoj_wydan where ? = ?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 stmt.setString(1, key);
                 stmt.setInt(2, value);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
-                    testDrives.add(new TestDrive(rs.getInt("id_jazda_probna"),
+                    releases.add(new Release(rs.getInt("id_pokoj_wydan"),
                             rs.getInt("id_pracownika"),
-                            rs.getInt("id_klienta"),
-                            rs.getInt("id_egzemplarza"),
+                            rs.getInt("id_zamowienia"),
                             rs.getTimestamp("data")));
                 }
                 rs.close();
@@ -94,12 +93,12 @@ public class TestDriveController {
                 System.out.println(e.getMessage());
             }
         }
-        return testDrives;
+        return releases;
     }
 
     @PostMapping("/getByDate")
-    public ArrayList<TestDrive> getByDate(@RequestBody Map<String, String> request){
-        ArrayList<TestDrive> testDrives = new ArrayList<>();
+    public ArrayList<Release> getByDate(@RequestBody Map<String, String> request){
+        ArrayList<Release> releases = new ArrayList<>();
         Timestamp ts;
         try{
             ts = Timestamp.valueOf(request.get("date"));
@@ -112,14 +111,13 @@ public class TestDriveController {
         }
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_jazda_probna, id_pracownika, id_klienta, id_egzemplarza, data FROM salon.jazda_probna where data = ?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT id_pokoj_wydan, id_pracownika, id_zamowienia, data FROM salon.pokoj_wydan where data = ?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 stmt.setTimestamp(1, ts);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
-                    testDrives.add(new TestDrive(rs.getInt("id_jazda_probna"),
+                    releases.add(new Release(rs.getInt("id_pokoj_wydan"),
                             rs.getInt("id_pracownika"),
-                            rs.getInt("id_klienta"),
-                            rs.getInt("id_egzemplarza"),
+                            rs.getInt("id_zamowienia"),
                             rs.getTimestamp("data")));
                 }
                 rs.close();
@@ -129,12 +127,12 @@ public class TestDriveController {
                 System.out.println(e.getMessage());
             }
         }
-        return testDrives;
+        return releases;
     }
 
     @PostMapping("/getWithParamByDate")
-    public ArrayList<TestDrive> getWithParamByDate(@RequestBody Map<String, String> request){
-        ArrayList<TestDrive> testDrives = new ArrayList<>();
+    public ArrayList<Release> getWithParamByDate(@RequestBody Map<String, String> request){
+        ArrayList<Release> releases = new ArrayList<>();
         String key;
         int value;
         Timestamp ts;
@@ -151,16 +149,15 @@ public class TestDriveController {
         }
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_jazda_probna, id_pracownika, id_klienta, id_egzemplarza, data FROM salon.jazda_probna where data = ? and ? = ?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT id_pokoj_wydan, id_pracownika, id_zamowienia, data FROM salon.pokoj_wydan where data = ? and ? = ?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 stmt.setTimestamp(1, ts);
                 stmt.setString(2, key);
                 stmt.setInt(3, value);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
-                    testDrives.add(new TestDrive(rs.getInt("id_jazda_probna"),
+                    releases.add(new Release(rs.getInt("id_pokoj_wydan"),
                             rs.getInt("id_pracownika"),
-                            rs.getInt("id_klienta"),
-                            rs.getInt("id_egzemplarza"),
+                            rs.getInt("id_zamowienia"),
                             rs.getTimestamp("data")));
                 }
                 rs.close();
@@ -170,18 +167,17 @@ public class TestDriveController {
                 System.out.println(e.getMessage());
             }
         }
-        return testDrives;
+        return releases;
     }
 
     @PostMapping("/add")
     public void addTestDrive(@RequestBody Map<String, String> request){
-        int id_employee, id_customer, id_unit;
+        int id_employee, id_order;
         Timestamp date;
 
         try{
             id_employee = Integer.parseInt(request.get("id_employee"));
-            id_customer = Integer.parseInt(request.get("id_customer"));
-            id_unit = Integer.parseInt(request.get("id_unit"));
+            id_order = Integer.parseInt(request.get("id_order"));
             date = Timestamp.valueOf(request.get("date"));
         }
         catch(Exception e){
@@ -192,11 +188,10 @@ public class TestDriveController {
             if(!getConn()){
                 throw new Exception();
             }
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO salon.jazda_probna values (default, ?, ?, ?, ?)");
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO salon.pokoj_wydan values (default, ?, ?, ?)");
             stmt.setInt(1, id_employee);
-            stmt.setInt(2, id_customer);
-            stmt.setInt(3, id_unit);
-            stmt.setTimestamp(4, date);
+            stmt.setInt(2, id_order);
+            stmt.setTimestamp(3, date);
             int i=stmt.executeUpdate();
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "A conflict occured");

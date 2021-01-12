@@ -14,7 +14,6 @@ import java.util.Objects;
 @RequestMapping(path="/models")
 @RestController
 public class ModelsController {
-    ArrayList<Model> models = new ArrayList<>();
     Connection c = null;
 
     @Autowired
@@ -35,7 +34,7 @@ public class ModelsController {
 
     @GetMapping("/getAll")
     public ArrayList<Model> getAll(){
-
+        ArrayList<Model> models = new ArrayList<>();
         if(!getConn()){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cause description here");
         }
