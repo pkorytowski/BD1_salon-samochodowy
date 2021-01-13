@@ -5,7 +5,7 @@ public class Unit {
     int id_unit;
     int id_color;
     String color;
-    Car car=null;
+    Car car;
     String status;
     double value;
 

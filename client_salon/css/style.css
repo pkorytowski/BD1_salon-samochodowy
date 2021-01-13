@@ -1,0 +1,158 @@
+body {
+    padding: 0;
+    width: 80%;
+    margin: auto;
+    background: #707070;
+    box-sizing: border-box;
+}
+
+body > * {
+    font-family: Courier;
+}
+
+header {
+    width: 100%;
+    margin: auto;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    background-color:  #3F3F3F;
+    color: white;
+
+}
+
+header h1 {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    margin: 0px;
+    padding: 0px;
+
+}
+
+nav {
+    width: 100%;
+    text-align: center;
+}
+
+ol {
+    list-style-type:none;
+    padding:0;
+    margin:0;
+    background-color:#202020;
+   /* height:4em;
+    line-height:2em;*/
+    text-align:center;
+}
+
+ol a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 15px 20px;
+    text-decoration: none;
+    font-size: 20pt;
+    font-weight: bolder;
+}
+
+ol > li {
+    float:left;
+    margin-left:1px;
+    width:16.6%;
+    background-color:black;
+    /*height:4em;*/
+}
+
+ol > li:first-child {
+    margin-left:0;
+}
+
+ol > li:hover {
+    color: white;
+    background-color: #d6aa62;
+}
+
+ol > li:hover > a {
+    color: #000000;
+}
+
+ol > li:hover > ul {
+    display:block;
+}
+
+ol > li > ul {
+    display:none;
+    list-style-type:none;
+    padding:0;
+    margin:0;
+}
+
+/* wygląd elementu - li - w części rozwijanej */
+ol > li > ul > li {
+    position:relative;
+    background-color:#EEE;
+}
+
+/* wygląd elementu - a - w części rozwijanej */
+ol > li > ul > li > a {
+    border-top:1px solid #FFF;
+}
+
+/* wygląd elementu - li - w części rozwijanej, po najechaniu kursorem myszki na dany element - li */
+ol > li > ul > li:hover {
+    background-color:#DDD;
+}
+
+/* wygląd elementu - a - w części rozwijanej, po najechaniu kursorem myszki na element - li */
+ol > li > ul > li:hover > a {
+    color:#09C;
+}
+
+
+
+main {
+    width: 100%;
+    background-color:  #5c5b5b;
+    height: 100%;
+    box-sizing: border-box;
+    min-height: 600px;
+    padding: 0;
+    margin: 0;
+}
+
+#prepareSection {
+    width:100%;
+}
+
+#prepareSection > * {
+    color: white;
+}
+
+#description {
+    overflow: hidden;
+    text-align: center;
+}
+
+#description > p {
+    width:90%;
+    margin: auto;
+    margin-top: 10px;
+}
+
+#description p{
+    overflow: hidden;
+}
+
+#params {
+    display: flex;
+}
+
+#setParams {
+    width: 50%;
+    float: left;
+    overflow: hidden;
+    text-align: center;
+}
+
+#showParams {
+    width: 50%;
+}

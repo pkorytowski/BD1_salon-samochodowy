@@ -31,20 +31,43 @@ const displayContent = () => {
 }
 
 const displayManagerMenu = () => {
-    let container = document.getElementById("content");
-    container.innerHTML = `
-    <ul>
-        <li><a href="#" id="showCars">Samochody</a></li>
+    let menu = document.getElementById("menu");
+    menu.innerHTML = `
+    <ol>
+        <li><a href="#" id="showCars">Samochody</a>
+        <ul>
+            <li><a href="#" id="showAvailableCars">Dostępne typy pojazdów</a></li>
+            <li><a href="#" id="addCar">Dodaj nowy typ pojazdu</a></li>
+            <li><a href="#" id="showUnits">Dostępne egzemplarze</a></li>
+            <li><a href="#" id="addUnit">Skonfiguruj auto</a></li>
+        </ul>
+        </li>
         <li><a href="#" id="showOrders">Zamowienia</a></li>
         <li><a href="#" id="showCustomers">Klienci</a></li>
         <li><a href="#" id="showEmployees">Pracownicy</a></li>
         <li><a href="#" id="showReleaseRoom">Pokój wydań</a></li>
         <li><a href="#" id="showTestDrive">Jazda próbna</a></li>
-    </ul>
+    </ol>
     `;
 
-    let showCars = document.getElementById("showCars");
-    showCars.addEventListener("click", showCarsList);
+    let showAvailableCars = document.getElementById("showAvailableCars");
+    showAvailableCars.addEventListener("click", showAvailableCarsList);
+
+    let addCar = document.getElementById("addCar");
+    addCar.addEventListener("click", showAddCarPage);
+
+    let showUnits = document.getElementById("showUnits");
+    showUnits.addEventListener("click", showActiveUnitsList);
+
+    let addUnit = document.getElementById("addUnit");
+    addUnit.addEventListener("click", showAddUnitPage);
+
+
+    let container = document.getElementById("content");
+    container.innerHTML = `
+    <h3> Wybierz jedną z poniższych opcji</h3>
+    `;
+
 }
 
 

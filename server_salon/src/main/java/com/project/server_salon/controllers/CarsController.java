@@ -1,6 +1,7 @@
 package com.project.server_salon.controllers;
 
 import com.project.server_salon.objects.Car;
+import com.project.server_salon.objects.Color;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -60,7 +61,6 @@ public class CarsController {
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
-                System.exit(1);
             }
         }
         return cars;
@@ -94,7 +94,6 @@ public class CarsController {
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
-                System.exit(1);
             }
         }
         return cars;
@@ -189,6 +188,34 @@ public class CarsController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e.getCause());
         }
         throw new ResponseStatusException(HttpStatus.OK);
+    }
+
+    @GetMapping("/getColors")
+    public ArrayList<Color> getAllColors(){
+        ArrayList<Color> colors = new ArrayList<>();
+
+        if(!getConn()){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error with connection with db");
+        }
+        if (c!=null){
+            try{
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.kolory", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next())  {
+                    colors.add(new Color(rs.getInt("id_koloru"),
+                            rs.getString("nazwa"),
+                            rs.getString("typ"),
+                            rs.getDouble("cena")));
+                }
+                rs.close();
+                stmt.close();
+            }
+            catch (SQLException e){
+                System.out.println(e.getMessage());
+
+            }
+        }
+        return colors;
     }
 
 

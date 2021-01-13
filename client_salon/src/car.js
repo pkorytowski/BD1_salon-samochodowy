@@ -1,5 +1,5 @@
-const showCarsList = () => {
-    let container = document.getElementById("content2");
+const showAvailableCarsList = () => {
+    let container = document.getElementById("content");
     let cars = [];
     getData("/cars/getAll").then(data => {
 
@@ -29,15 +29,10 @@ const showCarsList = () => {
         }
         container.innerHTML = str;
     });
-
-    let container3 = document.getElementById("content3");
-    container3.innerHTML = `
-    <button onclick="showAddCarPage();">Dodaj nowy samochod</button>
-    `;
 }
 
 const showAddCarPage = async () => {
-    let container = document.getElementById("content2");
+    let container = document.getElementById("content");
     let models = await getModelsOptionList();
     let versions = await getActiveVersionsOptionsList();
     let engines = await getEnginesOptionsList();
@@ -67,7 +62,7 @@ const addNewCar = () => {
     postData("/cars/add", data).then(response => {
         if(response.ok){
             alert("Dodano pojazd!");
-            showCarsList();
+            showAvailableCarsList();
         }
         else{
             alert("Wystąpił problem z dodaniem pojazdu");
@@ -116,6 +111,36 @@ const getActiveVersionsOptionsList = async () => {
     }
     return str;
 }
+
+
+const getActiveCarList = async () => {
+    let data = await getData('/cars/getActive');
+    return data;
+}
+
+const getCarOptionList = async () => {
+    let data = await getActiveCarList();
+    let str = '';
+    for(let i=0; i<data.length; i++){
+        str += '<option value="'+data[i].id_car+'">'+data[i].model+' | '+data[i].version+' | ' +data[i].engine+'</option>';
+    }
+    return str;
+}
+
+const getColorList = async () => {
+    let data = await getData('/cars/getColors');
+    return data;
+}
+
+const getColorOptionList = async () => {
+    let data = await getColorList();
+    let str = '';
+    for(let i=0; i<data.length; i++){
+        str += '<option value="'+data[i].id_color+'">'+data[i].name+' | '+data[i].type+' | ' +data[i].value+'zł</option>';
+    }
+    return str;
+}
+
 const activateCar = (id, state) => {
     if(state=='1'){
         state='0';
@@ -154,3 +179,4 @@ const deleteCar = (id) => {
         }
     });
 }
+
