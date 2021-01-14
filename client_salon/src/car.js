@@ -156,7 +156,7 @@ const activateCar = (id, state) => {
     postData("/cars/activate", data).then(response => {
         if (response.ok){
             alert("Zmieniono status");
-            showCarsList();
+            showAvailableCarsList();
         }
         else{
             alert("Wsystąpił problem ze zmianą statusu.");
@@ -172,7 +172,7 @@ const deleteCar = (id) => {
     postData("/cars/delete", data).then(response => {
         if (response.ok){
             alert("Usunięto pojazd");
-            showCarsList();
+            showAvailableCarsList();
         }
         else{
             alert("Nie można usuwać pojazdów, które są egzemplarze zostały utworzone. Sprobuj deaktywować pojazd.");

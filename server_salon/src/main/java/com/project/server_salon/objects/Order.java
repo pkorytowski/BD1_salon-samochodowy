@@ -2,19 +2,18 @@ package com.project.server_salon.objects;
 
 public class Order {
     int id_order;
-    int id_employee;
-    int id_customer;
-    int id_unit;
+    Employee employee;
+    CustomerShort customer;
+    Unit unit;
     String status;
     double discount;
     double value;
 
-    public Order(int id_order, int id_employee, int id_customer, int id_unit,
+    public Order(int id_order, Employee employee, Unit unit,
                  String status, double discount, double value){
         this.id_order = id_order;
-        this.id_employee = id_employee;
-        this.id_customer = id_customer;
-        this.id_unit = id_unit;
+        this.employee = employee;
+        this.unit = unit;
         this.status = status;
         this.discount = discount;
         this.value = value;
@@ -28,28 +27,20 @@ public class Order {
         this.id_order = id_order;
     }
 
-    public int getId_employee() {
-        return id_employee;
+    public Employee getEmployee() {
+        return employee;
     }
 
-    public void setId_employee(int id_employee) {
-        this.id_employee = id_employee;
+    public void setEmployee(Employee Employee) {
+        this.employee = employee;
     }
 
-    public int getId_customer() {
-        return id_customer;
+    public Unit getUnit() {
+        return unit;
     }
 
-    public void setId_customer(int id_customer) {
-        this.id_customer = id_customer;
-    }
-
-    public int getId_unit() {
-        return id_unit;
-    }
-
-    public void setId_unit(int id_unit) {
-        this.id_unit = id_unit;
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 
     public String getStatus() {

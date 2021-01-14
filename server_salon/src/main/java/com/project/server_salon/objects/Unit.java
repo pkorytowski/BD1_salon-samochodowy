@@ -5,15 +5,17 @@ public class Unit {
     int id_unit;
     int id_color;
     String color;
+    CustomerShort customer;
     Car car;
     String status;
     double value;
 
-    public Unit(int id_unit, int id_color, String color, Car car, String status, double value){
+    public Unit(int id_unit, int id_color, String color, CustomerShort customer, Car car, String status, double value){
         this.id_unit = id_unit;
         this.car = car;
         this.id_color = id_color;
         this.color = color;
+        this.customer = customer;
         this.status = status;
         this.value = value;
     }
@@ -48,6 +50,14 @@ public class Unit {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public CustomerShort getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerShort customer) {
+        this.customer = customer;
     }
 
     public String getStatus() {

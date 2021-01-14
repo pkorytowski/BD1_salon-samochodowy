@@ -12,7 +12,7 @@ const showActiveUnitsList = () => {
             for(let i=0; i<units.length; i++){
                 str += '<tr><td>' + units[i].status + '</td>' + '<td>' + units[i].car.model + '</td>' + '<td>';
                 str += units[i].car.engine + '</td>' + '<td>' + units[i].car.version + '</td><td>' + units[i].color;
-                str += '</td><td>'+units[i].value+'</td></tr>';
+                str += '</td><td>'+units[i].value+'</td><td>'+units[i].customer.surname+'</td><td>'+units[i].customer.firstName+'</td></tr>';
             }
             str += '</table>';
             str += '<button id="deleteUnit">Usuń pojazd</button>';
@@ -49,10 +49,11 @@ const showUnitsList = () => {
             for(let i=0; i<units.length; i++){
                 str += '<tr><td>' + units[i].status + '</td>' + '<td>' + units[i].car.model + '</td>' + '<td>';
                 str += units[i].car.engine + '</td>' + '<td>' + units[i].car.version + '</td><td>' + units[i].color;
-                str += '</td><td>'+units[i].value+'</td></tr>';
+                str += '</td><td>'+units[i].value+'</td><td>'+units[i].customer.surname+'</td><td>'+units[i].customer.firstName+'</td></tr>';
             }
             str += '</table>';
             str += '<button id="deleteUnit">Usuń pojazd</button>';
+            str += '<button id="changeUnitStatus">Zmień status</button>';
         }
         container.innerHTML = str;
 
@@ -65,6 +66,9 @@ const showUnitsList = () => {
 
         let deleteBtn = document.getElementById("deleteUnit");
         deleteBtn.addEventListener("click", showDeleteUnit);
+
+        let changeUnitStatusBtn = document.getElementById("changeUnitStatus");
+        changeUnitStatusBtn.addEventListener("click", showChangeUnitStatus);
     });
 }
 
@@ -96,7 +100,7 @@ const showDeleteUnit = () => {
 const showChangeUnitStatus = () => {
     let container = document.getElementById("content");
     let units = [];
-    getData("/units/getActiveUnits").then(data => {
+    getData("/units/getUnits").then(data => {
         for(let i=0;i<data.length;i++){
             units.push(data[i]);
         }
@@ -106,7 +110,8 @@ const showChangeUnitStatus = () => {
             for(let i=0; i<units.length; i++){
                 str += '<tr><td>' + units[i].status + '</td>' + '<td>' + units[i].car.model + '</td>' + '<td>';
                 str += units[i].car.engine + '</td>' + '<td>' + units[i].car.version + '</td><td>' + units[i].color;
-                str += '</td><td>'+units[i].value+'</td><td><button onclick="changeUnit('+units[i].id_unit+');">Zmień</button></td></tr>';
+                str += '</td><td>'+units[i].value+'</td><td>'+units[i].customer.surname+'</td><td>'+units[i].customer.firstName+'</td>';
+                str += '<td><button onclick="changeUnit('+units[i].id_unit+');">Zmień</button></td></tr>';
             }
             str += '</table>';
         }
@@ -118,12 +123,9 @@ const changeUnit = (id) => {
     let container = document.getElementById("content");
     container.innerHTML = `
     <select id="statusSelect">
-    <option value="utworzono" selected>utworzono</option>
+    <option value="skonfigurowano" selected>utworzono</option>
     <option value="składnik zamowienia">w zamówieniu</option>
-    <option value="w produkcji">w produkcji</option>
-    <option value="w drodze">w drodze</option>
     <option value="na placu">na placu</option>
-    <option value="gotowe do odbioru">gotowe do odbioru</option>
     <option value="transakcja zakonczona">transakcja zakończona</option>
     </select>
     <button id="changeBtn">Zatwierdź</button>
@@ -188,7 +190,7 @@ const addNewUnit = () =>{
     let data = {
         "id_car": document.getElementById("selectCar").value,
         "id_color": document.getElementById("selectColor").value,
-        "status": "utworzono"
+        "status": "skonfigurowano"
     };
     postData("/units/add", data).then(response => {
         if(response.ok){

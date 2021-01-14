@@ -1,6 +1,6 @@
 package com.project.server_salon.controllers;
 
-import com.project.server_salon.objects.Order;
+import com.project.server_salon.objects.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -33,6 +33,56 @@ public class OrderController {
         return true;
     }
 
+    @GetMapping("/getActiveOrders")
+    public ArrayList<Order> getActiveOrders(){
+        ArrayList<Order> orders = new ArrayList<Order>();
+        if(!getConn()){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
+        }
+        if (c!=null){
+            try{
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.zamowienia_widok where status<>'zakonczono'", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next())  {
+                    orders.add(new Order(rs.getInt("id_zamowienia"),
+                            new Employee(rs.getInt("id_pracownika"),
+                                        rs.getString("imie"),
+                                        rs.getString("nazwisko"),
+                                        rs.getString("stanowisko"),
+                                        rs.getString("email")),
+                            new Unit(rs.getInt("id_egzemplarza"),
+                                    rs.getInt("id_koloru"),
+                                    rs.getString("kolor"),
+                                    new CustomerShort(rs.getInt("id_klienta"),
+                                            rs.getString("imie_k"),
+                                            rs.getString("nazwisko_k"),
+                                            rs.getInt("telefon_k"),
+                                            rs.getString("email_k")),
+                                    new Car(rs.getInt("id_samochodu"),
+                                            rs.getInt("id_silnik"),
+                                            rs.getString("silnik"),
+                                            rs.getInt("id_wersje_wyposazenia"),
+                                            rs.getString("wersja"),
+                                            rs.getInt("id_modelu"),
+                                            rs.getString("model"),
+                                            rs.getInt("rok_modelowy"),
+                                            rs.getDouble("cena"),
+                                            rs.getInt("aktywny")),
+                                    rs.getString("status_egz"),
+                                    rs.getDouble("cena_wyjsciowa")),
+                            rs.getString("status"),
+                            rs.getDouble("rabat"),
+                            rs.getDouble("cena_koncowa")));
+                }
+                rs.close();
+                stmt.close();
+            }
+            catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return orders;
+    }
     @GetMapping("/getAll")
     public ArrayList<Order> getAll(){
         ArrayList<Order> orders = new ArrayList<Order>();
@@ -41,13 +91,35 @@ public class OrderController {
         }
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_zamowienia, id_pracownika, id_klienta, id_egzemplarza, status, rabat, cena_koncowa FROM salon.zamowienia", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.zamowienia_widok", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     orders.add(new Order(rs.getInt("id_zamowienia"),
-                            rs.getInt("id_pracownika"),
-                            rs.getInt("id_klienta"),
-                            rs.getInt("id_egzemplarza"),
+                            new Employee(rs.getInt("id_pracownika"),
+                                    rs.getString("imie"),
+                                    rs.getString("nazwisko"),
+                                    rs.getString("stanowisko"),
+                                    rs.getString("email")),
+                            new Unit(rs.getInt("id_egzemplarza"),
+                                    rs.getInt("id_koloru"),
+                                    rs.getString("kolor"),
+                                    new CustomerShort(rs.getInt("id_klienta"),
+                                            rs.getString("imie_k"),
+                                            rs.getString("nazwisko_k"),
+                                            rs.getInt("telefon_k"),
+                                            rs.getString("email_k")),
+                                    new Car(rs.getInt("id_samochodu"),
+                                            rs.getInt("id_silnik"),
+                                            rs.getString("silnik"),
+                                            rs.getInt("id_wersje_wyposazenia"),
+                                            rs.getString("wersja"),
+                                            rs.getInt("id_modelu"),
+                                            rs.getString("model"),
+                                            rs.getInt("rok_modelowy"),
+                                            rs.getDouble("cena"),
+                                            rs.getInt("aktywny")),
+                                    rs.getString("status_egz"),
+                                    rs.getDouble("cena_wyjsciowa")),
                             rs.getString("status"),
                             rs.getDouble("rabat"),
                             rs.getDouble("cena_koncowa")));
@@ -78,14 +150,36 @@ public class OrderController {
         }
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_zamowienia, id_pracownika, id_klienta, id_egzemplarza, status, rabat, cena_koncowa FROM salon.zamowienia where id_zamowienia=?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.zamowienia_widok where id_zamowienia=?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 stmt.setInt(1, id_order);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next())  {
                     order = new Order(rs.getInt("id_zamowienia"),
-                            rs.getInt("id_pracownika"),
-                            rs.getInt("id_klienta"),
-                            rs.getInt("id_egzemplarza"),
+                            new Employee(rs.getInt("id_pracownika"),
+                                    rs.getString("imie"),
+                                    rs.getString("nazwisko"),
+                                    rs.getString("stanowisko"),
+                                    rs.getString("email")),
+                            new Unit(rs.getInt("id_egzemplarza"),
+                                    rs.getInt("id_koloru"),
+                                    rs.getString("kolor"),
+                                    new CustomerShort(rs.getInt("id_klienta"),
+                                            rs.getString("imie_k"),
+                                            rs.getString("nazwisko_k"),
+                                            rs.getInt("telefon_k"),
+                                            rs.getString("email_k")),
+                                    new Car(rs.getInt("id_samochodu"),
+                                            rs.getInt("id_silnik"),
+                                            rs.getString("silnik"),
+                                            rs.getInt("id_wersje_wyposazenia"),
+                                            rs.getString("wersja"),
+                                            rs.getInt("id_modelu"),
+                                            rs.getString("model"),
+                                            rs.getInt("rok_modelowy"),
+                                            rs.getDouble("cena"),
+                                            rs.getInt("aktywny")),
+                                    rs.getString("status_egz"),
+                                    rs.getDouble("cena_wyjsciowa")),
                             rs.getString("status"),
                             rs.getDouble("rabat"),
                             rs.getDouble("cena_koncowa"));
@@ -108,7 +202,7 @@ public class OrderController {
     public void addOrder(@RequestBody Map<String, String> request){
         int id_employee, id_customer, id_unit;
         String status;
-        double discount, value;
+        double discount;
 
         try{
             id_employee = Integer.parseInt(request.get("id_employee"));
@@ -116,7 +210,6 @@ public class OrderController {
             id_unit = Integer.parseInt(request.get("id_unit"));
             status = request.get("status");
             discount = Double.parseDouble("discount");
-            value = Double.parseDouble("value");
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form");
@@ -177,7 +270,7 @@ public class OrderController {
         String status;
         try{
             id_order = Integer.parseInt(request.get("id_order"));
-            status = request.get("discount");
+            status = request.get("status");
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form");
@@ -200,4 +293,29 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/delete")
+    public void delete(@RequestBody Map<String, String> request){
+        int id_order;
+        try{
+            id_order = Integer.parseInt(request.get("id_order"));
+        }
+        catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form");
+        }
+
+        try{
+            if(!getConn()){
+                throw new Exception();
+            }
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM salon.zamowienia where id_zamowienia=?");
+            stmt.setInt(1, id_order);
+            int i = stmt.executeUpdate();
+            if(i!=1){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Problem with deleting order");
+            }
+        }
+        catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
+        }
+    }
 }

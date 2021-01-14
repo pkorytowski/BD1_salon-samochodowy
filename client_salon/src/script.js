@@ -42,7 +42,12 @@ const displayManagerMenu = () => {
             <li><a href="#" id="addUnit">Skonfiguruj auto</a></li>
         </ul>
         </li>
-        <li><a href="#" id="showOrders">Zamowienia</a></li>
+        <li><a href="#" id="showOrders">Zamowienia</a>
+        <ul>
+            <li><a href="#" id="showCurrentOrders">Pokaż aktualne zamówienia</a></li>
+            <li><a href="#" id="showAddOrder">Utwórz nowe zamówienie</a></li>
+        </ul>
+        </li>
         <li><a href="#" id="showCustomers">Klienci</a></li>
         <li><a href="#" id="showEmployees">Pracownicy</a></li>
         <li><a href="#" id="showReleaseRoom">Pokój wydań</a></li>
@@ -62,6 +67,11 @@ const displayManagerMenu = () => {
     let addUnit = document.getElementById("addUnit");
     addUnit.addEventListener("click", showAddUnitPage);
 
+    let showCurrentOrders = document.getElementById("showCurrentOrders");
+    showCurrentOrders.addEventListener("click", showCurrentOrdersPage);
+
+    let showAddOrder = document.getElementById("showAddOrder");
+    showAddOrder.addEventListener("click", showAddOrderPage);
 
     let container = document.getElementById("content");
     container.innerHTML = `

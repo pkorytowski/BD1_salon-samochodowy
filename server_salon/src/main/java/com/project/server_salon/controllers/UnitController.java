@@ -1,6 +1,7 @@
 package com.project.server_salon.controllers;
 
 import com.project.server_salon.objects.Car;
+import com.project.server_salon.objects.CustomerShort;
 import com.project.server_salon.objects.Unit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -48,6 +49,11 @@ public class UnitController {
                     units.add(new Unit(rs.getInt("id_egzemplarza"),
                             rs.getInt("id_koloru"),
                             rs.getString("kolor"),
+                            new CustomerShort(rs.getInt("id_klienta"),
+                                    rs.getString("imie_k"),
+                                    rs.getString("nazwisko_k"),
+                                    rs.getInt("telefon_k"),
+                                    rs.getString("email_k")),
                             new Car(rs.getInt("id_samochodu"),
                                     rs.getInt("id_silnik"),
                                     rs.getString("silnik"),
@@ -58,7 +64,7 @@ public class UnitController {
                                     rs.getInt("rok_modelowy"),
                                     rs.getDouble("cena"),
                                     rs.getInt("aktywny")),
-                            rs.getString("status"),
+                            rs.getString("status_egz"),
                             rs.getDouble("cena_wyjsciowa")));
                 }
                 rs.close();
@@ -66,7 +72,6 @@ public class UnitController {
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
-                System.exit(1);
             }
         }
         return units;
@@ -81,12 +86,17 @@ public class UnitController {
 
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.egzemplarze_widok where status<>'transakcja zakonczona'", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.egzemplarze_widok where status_egz<>'transakcja zakonczona'", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     units.add(new Unit(rs.getInt("id_egzemplarza"),
                             rs.getInt("id_koloru"),
                             rs.getString("kolor"),
+                            new CustomerShort(rs.getInt("id_klienta"),
+                                    rs.getString("imie_k"),
+                                    rs.getString("nazwisko_k"),
+                                    rs.getInt("telefon_k"),
+                                    rs.getString("email_k")),
                             new Car(rs.getInt("id_samochodu"),
                                     rs.getInt("id_silnik"),
                                     rs.getString("silnik"),
@@ -97,7 +107,7 @@ public class UnitController {
                                     rs.getInt("rok_modelowy"),
                                     rs.getDouble("cena"),
                                     rs.getInt("aktywny")),
-                            rs.getString("status"),
+                            rs.getString("status_egz"),
                             rs.getDouble("cena_wyjsciowa")));
                 }
                 rs.close();
@@ -105,7 +115,49 @@ public class UnitController {
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
-                System.exit(1);
+            }
+        }
+        return units;
+    }
+
+    @GetMapping("/getConfiguredUnits")
+    public ArrayList<Unit> getConfiguredUnits(){
+        ArrayList<Unit> units = new ArrayList<>();
+        if(!getConn()){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error with connection with db");
+        }
+
+        if (c!=null){
+            try{
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.egzemplarze_widok where status_egz='skonfigurowano'", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next())  {
+                    units.add(new Unit(rs.getInt("id_egzemplarza"),
+                            rs.getInt("id_koloru"),
+                            rs.getString("kolor"),
+                            new CustomerShort(rs.getInt("id_klienta"),
+                                    rs.getString("imie_k"),
+                                    rs.getString("nazwisko_k"),
+                                    rs.getInt("telefon_k"),
+                                    rs.getString("email_k")),
+                            new Car(rs.getInt("id_samochodu"),
+                                    rs.getInt("id_silnik"),
+                                    rs.getString("silnik"),
+                                    rs.getInt("id_wersje_wyposazenia"),
+                                    rs.getString("wersja"),
+                                    rs.getInt("id_modelu"),
+                                    rs.getString("model"),
+                                    rs.getInt("rok_modelowy"),
+                                    rs.getDouble("cena"),
+                                    rs.getInt("aktywny")),
+                            rs.getString("status_egz"),
+                            rs.getDouble("cena_wyjsciowa")));
+                }
+                rs.close();
+                stmt.close();
+            }
+            catch (SQLException e){
+                System.out.println(e.getMessage());
             }
         }
         return units;
