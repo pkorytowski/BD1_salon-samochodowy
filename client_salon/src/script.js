@@ -48,7 +48,11 @@ const displayManagerMenu = () => {
             <li><a href="#" id="showAddOrder">Utwórz nowe zamówienie</a></li>
         </ul>
         </li>
-        <li><a href="#" id="showCustomers">Klienci</a></li>
+        <li><a href="#" id="showCustomers">Klienci</a>
+        <ul>
+            <li><a href="#" id="showCustomersList">Pokaż klientów</a></li>
+        </ul>
+        </li>
         <li><a href="#" id="showEmployees">Pracownicy</a></li>
         <li><a href="#" id="showReleaseRoom">Pokój wydań</a></li>
         <li><a href="#" id="showTestDrive">Jazda próbna</a></li>
@@ -72,6 +76,9 @@ const displayManagerMenu = () => {
 
     let showAddOrder = document.getElementById("showAddOrder");
     showAddOrder.addEventListener("click", showAddOrderPage);
+
+    let showCustomersList = document.getElementById("showCustomersList");
+    showCustomersList.addEventListener("click", showCustomersListPage);
 
     let container = document.getElementById("content");
     container.innerHTML = `

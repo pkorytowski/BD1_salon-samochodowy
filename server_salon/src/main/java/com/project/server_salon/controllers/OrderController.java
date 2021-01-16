@@ -200,16 +200,15 @@ public class OrderController {
 
     @PostMapping("/add")
     public void addOrder(@RequestBody Map<String, String> request){
-        int id_employee, id_customer, id_unit;
+        int id_employee, id_unit;
         String status;
         double discount;
 
         try{
-            id_employee = Integer.parseInt(request.get("id_employee"));
-            id_customer = Integer.parseInt(request.get("id_customer"));
             id_unit = Integer.parseInt(request.get("id_unit"));
+            id_employee = Integer.parseInt(request.get("id_employee"));
             status = request.get("status");
-            discount = Double.parseDouble("discount");
+            discount = Double.parseDouble(request.get("discount"));
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form");
@@ -219,12 +218,11 @@ public class OrderController {
             if(!getConn()){
                 throw new Exception();
             }
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO salon.zamowienia values (default, ?, ?, ?, ?, ?, 0)");
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO salon.zamowienia values (default, ?, ?, ?, ?, 0)");
             stmt.setInt(1, id_employee);
-            stmt.setInt(2, id_customer);
-            stmt.setInt(3, id_unit);
-            stmt.setString(4, status);
-            stmt.setDouble(5, discount);
+            stmt.setInt(2, id_unit);
+            stmt.setString(3, status);
+            stmt.setDouble(4, discount);
             int i=stmt.executeUpdate();
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Order already exists");

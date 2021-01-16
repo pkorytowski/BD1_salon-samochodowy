@@ -165,10 +165,11 @@ public class UnitController {
 
     @PostMapping("/add")
     public void addUnit(@RequestBody Map<String, String> request){
-        int id_car, id_color;
+        int id_car, id_color, id_customer;
         String status;
 
         try{
+            id_customer = Integer.parseInt(request.get("id_customer"));
             id_car = Integer.parseInt(request.get("id_car"));
             id_color = Integer.parseInt(request.get("id_color"));
             status = request.get("status");
@@ -180,10 +181,11 @@ public class UnitController {
             if(!getConn()){
                 throw new Exception();
             }
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO salon.egzemplarz values (default, ?, ?, ?, 0)");
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO salon.egzemplarz values (default, ?, ?, ?, ?, 0)");
             stmt.setInt(1, id_car);
-            stmt.setInt(2, id_color);
-            stmt.setString(3, status);
+            stmt.setInt(2, id_customer);
+            stmt.setInt(3, id_color);
+            stmt.setString(4, status);
             int i=stmt.executeUpdate();
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Unit already exists");

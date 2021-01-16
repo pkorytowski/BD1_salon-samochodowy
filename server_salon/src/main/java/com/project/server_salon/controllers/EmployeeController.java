@@ -55,7 +55,34 @@ public class EmployeeController {
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
-                System.exit(1);
+            }
+        }
+        return employees;
+    }
+
+    @GetMapping("/getSellers")
+    public ArrayList<Employee> getSellers(){
+        ArrayList<Employee> employees = new ArrayList<>();
+        if(!getConn()){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cause description here");
+        }
+
+        if (c!=null){
+            try{
+                PreparedStatement stmt = c.prepareStatement("SELECT id_pracownika, imie, nazwisko, stanowisko, email FROM salon.pracownicy where stanowisko='sprzedawca'", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next())  {
+                    employees.add(new Employee(rs.getInt("id_pracownika"),
+                            rs.getString("imie"),
+                            rs.getString("nazwisko"),
+                            rs.getString("stanowisko"),
+                            rs.getString("email")));
+                }
+                rs.close();
+                stmt.close();
+            }
+            catch (SQLException e){
+                System.out.println(e.getMessage());
             }
         }
         return employees;
@@ -98,9 +125,9 @@ public class EmployeeController {
 
     @PostMapping("/delete")
     public void deleteEmployee(@RequestBody Map<String, Integer> request){
-        int id_pracownika;
+        int id_employee;
         try{
-            id_pracownika = request.get("id_pracownika");
+            id_employee = request.get("id_employee");
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong request form");
@@ -111,7 +138,7 @@ public class EmployeeController {
                 throw new Exception();
             }
             PreparedStatement stmt = c.prepareStatement("DELETE FROM salon.pracownicy WHERE id_pracownika=?");
-            stmt.setInt(1, id_pracownika);
+            stmt.setInt(1, id_employee);
             int i=stmt.executeUpdate();
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "User does not exist");

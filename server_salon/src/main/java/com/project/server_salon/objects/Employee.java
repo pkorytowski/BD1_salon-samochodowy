@@ -1,7 +1,7 @@
 package com.project.server_salon.objects;
 
 public class Employee {
-    private int id_pracownika;
+    private int id_employee;
     private String name;
     private String surname;
     private String position;
@@ -9,17 +9,17 @@ public class Employee {
 
     public Employee(){}
 
-    public Employee(int id_pracownika, String name, String surname, String position, String email){
-        this.id_pracownika = id_pracownika;
+    public Employee(int id_employee, String name, String surname, String position, String email){
+        this.id_employee = id_employee;
         this.name = name;
         this.surname = surname;
         this.position = position;
         this.email = email;
     }
 
-    public void setId_pracownika(int id_pracownika){ this.id_pracownika=id_pracownika; }
+    public void setId_employee(int id_employee){ this.id_employee=id_employee; }
 
-    public int getId_pracownika(){ return id_pracownika; }
+    public int getId_employee(){ return id_employee; }
 
     public void setName(String name){
         this.name = name;

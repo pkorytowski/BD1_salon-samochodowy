@@ -170,15 +170,27 @@ const deleteUnit = () => {
     }
 }
 
+const getCustomersOptionList = async () => {
+    let data = await getData('/customers/getAll')
+    let str = '';
+    for(let i=0; i<data.length; i++){
+        str += '<option value="'+data[i].id_customer+'">' + data[i].surname + ' ' + data[i].firstName + '</option>';
+    }
+    return str;
+}
+
 const showAddUnitPage = async () => {
     let container = document.getElementById("content");
     let cars = await getCarOptionList();
     let colors = await getColorOptionList();
+    let customers = await getCustomersOptionList();
     container.innerHTML = `
         <label for="selectCar">Samochód</label>
         <select id="selectCar" name="selectCar">`+ cars +`</select></br>
         <label for="selectColor">Kolor</label>
         <select id="selectColor" name="selectColor">`+ colors +`</select></br>
+        <label for="selectCustomers">Klient</label>
+        <select id="selectCustomers" name="selectCustomers">`+customers+`</select></br>
         <button id="addNewUnitBtn">Dodaj</button>
     `;
 
@@ -187,11 +199,20 @@ const showAddUnitPage = async () => {
 }
 
 const addNewUnit = () =>{
+    let user;
+    if(sessionStorage.getItem("role")==="ROLE_CLIENT"){
+        user = sessionStorage.getItem("user");
+    }
+    else{
+        user = document.getElementById("selectCustomers").value;
+    }
     let data = {
         "id_car": document.getElementById("selectCar").value,
+        "id_customer": user,
         "id_color": document.getElementById("selectColor").value,
         "status": "skonfigurowano"
     };
+    console.log(data);
     postData("/units/add", data).then(response => {
         if(response.ok){
             alert("Dodano pojazd!");
