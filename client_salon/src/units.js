@@ -6,7 +6,7 @@ const showActiveUnitsList = () => {
             units.push(data[i]);
         }
         let str = '';
-        if (units.length!=0){
+        if (units.length!==0){
             str += '<label for="checkActive">Pokaż wszystkie egzemplarze</label><input type="checkbox" id="checkActive" name="checkActive">';
             str += '<table>';
             for(let i=0; i<units.length; i++){
@@ -173,6 +173,7 @@ const deleteUnit = () => {
 const getCustomersOptionList = async () => {
     let data = await getData('/customers/getAll')
     let str = '';
+    str += '<option value="">brak</option>';
     for(let i=0; i<data.length; i++){
         str += '<option value="'+data[i].id_customer+'">' + data[i].surname + ' ' + data[i].firstName + '</option>';
     }
@@ -205,6 +206,9 @@ const addNewUnit = () =>{
     }
     else{
         user = document.getElementById("selectCustomers").value;
+        if (user===''){
+            user=null;
+        }
     }
     let data = {
         "id_car": document.getElementById("selectCar").value,

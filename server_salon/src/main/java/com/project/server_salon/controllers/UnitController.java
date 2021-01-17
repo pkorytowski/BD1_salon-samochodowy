@@ -165,11 +165,16 @@ public class UnitController {
 
     @PostMapping("/add")
     public void addUnit(@RequestBody Map<String, String> request){
-        int id_car, id_color, id_customer;
+        int id_car, id_color;
         String status;
-
+        Integer id_customer;
         try{
-            id_customer = Integer.parseInt(request.get("id_customer"));
+            try{
+                id_customer = Integer.parseInt(request.get("id_customer"));
+            }
+            catch (Exception e){
+                id_customer=null;
+            }
             id_car = Integer.parseInt(request.get("id_car"));
             id_color = Integer.parseInt(request.get("id_color"));
             status = request.get("status");
@@ -183,7 +188,7 @@ public class UnitController {
             }
             PreparedStatement stmt = c.prepareStatement("INSERT INTO salon.egzemplarz values (default, ?, ?, ?, ?, 0)");
             stmt.setInt(1, id_car);
-            stmt.setInt(2, id_customer);
+            stmt.setObject(2, id_customer, Types.INTEGER);
             stmt.setInt(3, id_color);
             stmt.setString(4, status);
             int i=stmt.executeUpdate();

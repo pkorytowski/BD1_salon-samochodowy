@@ -76,6 +76,14 @@ const addEmployee = () => {
 
 const showUpdateEmployee = (employee) => {
     let container = document.getElementById("content");
+    let position = employee.position;
+    let position2='';
+    if(position==='sprzedawca'){
+        position2 = 'kierownik';
+    }
+    else {
+        position2 = 'sprzedawca'
+    }
     container.innerHTML = `
     <form>
     <label for="name">Imię:</label>
@@ -83,7 +91,10 @@ const showUpdateEmployee = (employee) => {
     <label for="surname">Nazwisko:</label>
     <input id="surname" name="surname" value="`+ employee.surname +`"/></br>
     <label for="position">Stanowisko:</label>
-    <input id="position" name="position" value="`+ employee.position +`"/></br>
+    <select id="position" name="position" value="`+ employee.position +`">
+    <option value="`+position+` checked">`+position+`</option>
+    <option value="`+position2+`">`+position2+`</option>
+    </select></br>
     <label for="email">Email:</label>
     <input id="email" name="email" value="`+ employee.email +`"/></br>
     </form>

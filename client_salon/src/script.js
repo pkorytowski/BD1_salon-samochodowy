@@ -60,7 +60,12 @@ const displayManagerMenu = () => {
             <li><a href="#" id="showAddEmployee">Dodaj pracownika</a></li>
         </ul>
         </li>
-        <li><a href="#" id="showReleaseRoom">Pokój wydań</a></li>
+        <li><a href="#" id="showRelease">Pokój wydań</a>
+        <ul>
+            <li><a href="#" id="showReleaseRoom">Pokaż aktualne wydania</a></li>
+            <li><a href="#" id="showAddRelease">Dodaj nowe wydanie</a></li>
+        </ul>
+        </li>
         <li><a href="#" id="showTestDrive">Jazda próbna</a></li>
     </ol>
     `;
@@ -94,6 +99,12 @@ const displayManagerMenu = () => {
 
     let showAddEmployee = document.getElementById("showAddEmployee");
     showAddEmployee.addEventListener("click", showAddEmployeePage);
+
+    let showReleaseRoom = document.getElementById("showReleaseRoom");
+    showReleaseRoom.addEventListener("click", showReleaseRoomPage);
+
+    let showAddRelease = document.getElementById("showAddRelease");
+    showAddRelease.addEventListener("click", showAddReleasePage);
 
     let container = document.getElementById("content");
     container.innerHTML = `

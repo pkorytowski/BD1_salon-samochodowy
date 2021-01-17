@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
@@ -41,11 +42,13 @@ public class ReleaseRoomController {
         }
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_pokoj_wydan, id_pracownika, id_zamowienia, data FROM salon.pokoj_wydan", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.pokoj_wydan_widok", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     releases.add(new Release(rs.getInt("id_pokoj_wydan"),
                             rs.getInt("id_pracownika"),
+                            rs.getString("imie"),
+                            rs.getString("nazwisko"),
                             rs.getInt("id_zamowienia"),
                             rs.getTimestamp("data")));
                 }
@@ -83,6 +86,8 @@ public class ReleaseRoomController {
                 while (rs.next())  {
                     releases.add(new Release(rs.getInt("id_pokoj_wydan"),
                             rs.getInt("id_pracownika"),
+                            rs.getString("imie"),
+                            rs.getString("nazwisko"),
                             rs.getInt("id_zamowienia"),
                             rs.getTimestamp("data")));
                 }
@@ -117,6 +122,8 @@ public class ReleaseRoomController {
                 while (rs.next())  {
                     releases.add(new Release(rs.getInt("id_pokoj_wydan"),
                             rs.getInt("id_pracownika"),
+                            rs.getString("imie"),
+                            rs.getString("nazwisko"),
                             rs.getInt("id_zamowienia"),
                             rs.getTimestamp("data")));
                 }
@@ -157,6 +164,8 @@ public class ReleaseRoomController {
                 while (rs.next())  {
                     releases.add(new Release(rs.getInt("id_pokoj_wydan"),
                             rs.getInt("id_pracownika"),
+                            rs.getString("imie"),
+                            rs.getString("nazwisko"),
                             rs.getInt("id_zamowienia"),
                             rs.getTimestamp("data")));
                 }
@@ -173,12 +182,13 @@ public class ReleaseRoomController {
     @PostMapping("/add")
     public void addTestDrive(@RequestBody Map<String, String> request){
         int id_employee, id_order;
-        Timestamp date;
-
+        LocalDateTime date;
+        Timestamp ts;
         try{
             id_employee = Integer.parseInt(request.get("id_employee"));
             id_order = Integer.parseInt(request.get("id_order"));
-            date = Timestamp.valueOf(request.get("date"));
+            date = LocalDateTime.parse(request.get("date"));
+            ts = Timestamp.valueOf(date);
         }
         catch(Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form");
@@ -191,14 +201,14 @@ public class ReleaseRoomController {
             PreparedStatement stmt = c.prepareStatement("INSERT INTO salon.pokoj_wydan values (default, ?, ?, ?)");
             stmt.setInt(1, id_employee);
             stmt.setInt(2, id_order);
-            stmt.setTimestamp(3, date);
+            stmt.setTimestamp(3, ts);
             int i=stmt.executeUpdate();
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "A conflict occured");
             }
         }
         catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
