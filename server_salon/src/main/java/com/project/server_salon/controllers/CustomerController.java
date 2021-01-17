@@ -115,14 +115,20 @@ public class CustomerController {
 
     @PostMapping("/add")
     public void addCustomer(@RequestBody Map<String, String> request){
-        String firstName, surname, companyName, NIP, street, flatNumber, postalCode, city, email, password;
+        String firstName, surname, companyName, street, flatNumber, postalCode, city, email, password;
         int phoneNumber;
+        Integer NIP;
 
         try{
+            try{
+                NIP = Integer.parseInt(request.get("NIP"));
+            }
+            catch(Exception e){
+                NIP=null;
+            }
             firstName = request.get("firstName");
             surname = request.get("surname");
             companyName = request.get("companyName");
-            NIP = request.get("NIP");
             street = request.get("street");
             flatNumber = request.get("flatNumber");
             postalCode = request.get("postalCode");
@@ -143,7 +149,7 @@ public class CustomerController {
             stmt.setString(1, firstName);
             stmt.setString(2, surname);
             stmt.setString(3, companyName);
-            stmt.setString(4, NIP);
+            stmt.setObject(4, NIP, Types.INTEGER);
             stmt.setString(5, street);
             stmt.setString(6, flatNumber);
             stmt.setString(7, postalCode);
@@ -163,13 +169,27 @@ public class CustomerController {
 
     @PostMapping("/update")
     public void updateCustomer(@RequestBody Map<String, String> request){
-        int id_customer;
-        String key;
-        String value;
+        String firstName, surname, companyName, street, flatNumber, postalCode, city, email;
+        int id_customer, phoneNumber;
+        Integer NIP;
+
         try{
+            try{
+                NIP = Integer.parseInt(request.get("NIP"));
+            }
+            catch(Exception e){
+                NIP=null;
+            }
             id_customer = Integer.parseInt(request.get("id_customer"));
-            key = request.get("key");
-            value = request.get("value");
+            firstName = request.get("firstName");
+            surname = request.get("surname");
+            companyName = request.get("companyName");
+            street = request.get("street");
+            flatNumber = request.get("flatNumber");
+            postalCode = request.get("postalCode");
+            city = request.get("city");
+            phoneNumber = Integer.parseInt(request.get("phoneNumber"));
+            email = request.get("email");
         }
         catch(Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form");
@@ -179,17 +199,25 @@ public class CustomerController {
             if(!getConn()){
                 throw new Exception();
             }
-            PreparedStatement stmt = c.prepareStatement("UPDATE salon.klienci set ? = ? where id_klienta = ?");
-            stmt.setString(1, key);
-            stmt.setString(2, value);
-            stmt.setInt(3, id_customer);
+            PreparedStatement stmt = c.prepareStatement("UPDATE salon.klienci set imie = ?, nazwisko = ?, nazwa=?, nip=?, ulica=?, nr_domu=?, kod_pocztowy=?, miejscowosc=?, telefon=?, email=? where id_klienta = ?");
+            stmt.setString(1, firstName);
+            stmt.setString(2, surname);
+            stmt.setString(3, companyName);
+            stmt.setObject(4, NIP, Types.INTEGER);
+            stmt.setString(5, street);
+            stmt.setString(6, flatNumber);
+            stmt.setString(7, postalCode);
+            stmt.setString(8, city);
+            stmt.setInt(9, phoneNumber);
+            stmt.setString(10, email);
+            stmt.setInt(11, id_customer);
             int i = stmt.executeUpdate();
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "User does not exists");
             }
         }
         catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 

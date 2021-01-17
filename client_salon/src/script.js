@@ -51,9 +51,15 @@ const displayManagerMenu = () => {
         <li><a href="#" id="showCustomers">Klienci</a>
         <ul>
             <li><a href="#" id="showCustomersList">Pokaż klientów</a></li>
+            <li><a href="#" id="showAddCustomer">Dodaj klienta</a></li>
         </ul>
         </li>
-        <li><a href="#" id="showEmployees">Pracownicy</a></li>
+        <li><a href="#" id="showEmployees">Pracownicy</a>
+        <ul>
+            <li><a href="#" id="showEmployeesList">Pokaż pracowników</a></li>
+            <li><a href="#" id="showAddEmployee">Dodaj pracownika</a></li>
+        </ul>
+        </li>
         <li><a href="#" id="showReleaseRoom">Pokój wydań</a></li>
         <li><a href="#" id="showTestDrive">Jazda próbna</a></li>
     </ol>
@@ -79,6 +85,15 @@ const displayManagerMenu = () => {
 
     let showCustomersList = document.getElementById("showCustomersList");
     showCustomersList.addEventListener("click", showCustomersListPage);
+
+    let showAddCustomer = document.getElementById("showAddCustomer");
+    showAddCustomer.addEventListener("click", showAddCustomerPage);
+
+    let showEmployeesList = document.getElementById("showEmployeesList");
+    showEmployeesList.addEventListener("click", showEmployeesPage);
+
+    let showAddEmployee = document.getElementById("showAddEmployee");
+    showAddEmployee.addEventListener("click", showAddEmployeePage);
 
     let container = document.getElementById("content");
     container.innerHTML = `

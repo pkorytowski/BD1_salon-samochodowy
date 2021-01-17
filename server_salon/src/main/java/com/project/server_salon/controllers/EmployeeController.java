@@ -123,6 +123,42 @@ public class EmployeeController {
 
     }
 
+    @PostMapping("/update")
+    public void updateEmployee(@RequestBody Map<String, String> request){
+        String name, surname, position, email;
+        int id_employee;
+        try{
+            id_employee = Integer.parseInt(request.get("id_employee"));
+            name = request.get("name");
+            surname = request.get("surname");
+            position = request.get("position");
+            email = request.get("email");
+        }
+        catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+
+        try{
+            if(!getConn()){
+                throw new Exception();
+            }
+            PreparedStatement stmt = c.prepareStatement("UPDATE salon.pracownicy set imie=?, nazwisko=?, stanowisko=?, email=? where id_pracownika=?");
+            stmt.setString(1, name);
+            stmt.setString(2, surname);
+            stmt.setString(3, position);
+            stmt.setString(4, email);
+            stmt.setInt(5, id_employee);
+            int i=stmt.executeUpdate();
+            if(i!=1){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Problem with updating");
+            }
+        }
+        catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
+        }
+
+    }
+
     @PostMapping("/delete")
     public void deleteEmployee(@RequestBody Map<String, Integer> request){
         int id_employee;
