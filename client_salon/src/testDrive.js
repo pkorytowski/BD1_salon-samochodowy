@@ -1,21 +1,22 @@
-const showReleaseRoomPage = () => {
+const showTestDrivePage = () => {
     let container = document.getElementById("content");
-    let releases = [];
-    getData('/release-room/getAll').then(data => {
+    let test_drives = [];
+    getData('/testdrive/getAll').then(data => {
         for(let i=0; i<data.length;i++){
-            releases.push(data[i]);
+            test_drives.push(data[i]);
         }
         let str = '';
         str += '<label for="showFromToday">Pokaż od dzisiaj</label><input type="checkbox" id="showFromToday" name="showFromToday">';
-
-        if(releases.length!==0){
+        if(test_drives.length!==0){
             str += '<table>';
-            for(let i=0; i<releases.length; i++){
-                str += '<tr><td>'+releases[i].surname+'</td>';
-                str += '<td>'+releases[i].name+'</td>';
-                str += '<td>'+releases[i].id_order+'</td>';
-                str += '<td>'+releases[i].date+'</td>';
-                str += '<td><button onclick="deleteRelease('+releases[i].id_release+');">Usuń</button></td>';
+            for(let i=0; i<test_drives.length; i++){
+                str += '<tr><td>'+test_drives[i].employeeSurname+'</td>';
+                str += '<td>'+test_drives[i].employeeName+'</td>';
+                str += '<td>'+test_drives[i].customerSurname+'</td>';
+                str += '<td>'+test_drives[i].customerName+'</td>';
+                str += '<td>'+test_drives[i].id_unit+'</td>';
+                str += '<td>'+test_drives[i].date+'</td>';
+                str += '<td><button onclick="deleteTestDrive('+test_drives[i].id_test_drive+');">Usuń</button></td>';
                 str += '</tr>';
             }
         }
@@ -23,29 +24,31 @@ const showReleaseRoomPage = () => {
         let checkActive = document.querySelector("input[name=showFromToday]");
         checkActive.addEventListener("change", function() {
             if (this.checked){
-                showFromTodayReleaseRoomPage();
+                showFromTodayTestDrivePage();
             }
         });
     });
 }
 
-const showFromTodayReleaseRoomPage = () => {
+const showFromTodayTestDrivePage = () => {
     let container = document.getElementById("content");
-    let releases = [];
-    getData('/release-room/getAllFromToday').then(data => {
+    let test_drives = [];
+    getData('/testdrive/getAllFromToday').then(data => {
         for(let i=0; i<data.length;i++){
-            releases.push(data[i]);
+            test_drives.push(data[i]);
         }
         let str = '';
         str += '<label for="showFromToday">Pokaż od dzisiaj</label><input type="checkbox" id="showFromToday" name="showFromToday" checked>';
-        if(releases.length!==0){
+        if(test_drives.length!==0){
             str += '<table>';
-            for(let i=0; i<releases.length; i++){
-                str += '<tr><td>'+releases[i].surname+'</td>';
-                str += '<td>'+releases[i].name+'</td>';
-                str += '<td>'+releases[i].id_order+'</td>';
-                str += '<td>'+releases[i].date+'</td>';
-                str += '<td><button onclick="deleteRelease('+releases[i].id_release+');">Usuń</button></td>';
+            for(let i=0; i<test_drives.length; i++){
+                str += '<tr><td>'+test_drives[i].employeeSurname+'</td>';
+                str += '<td>'+test_drives[i].employeeName+'</td>';
+                str += '<td>'+test_drives[i].customerSurname+'</td>';
+                str += '<td>'+test_drives[i].customerName+'</td>';
+                str += '<td>'+test_drives[i].id_unit+'</td>';
+                str += '<td>'+test_drives[i].date+'</td>';
+                str += '<td><button onclick="deleteTestDrive('+test_drives[i].id_test_drive+');">Usuń</button></td>';
                 str += '</tr>';
             }
         }
@@ -53,20 +56,20 @@ const showFromTodayReleaseRoomPage = () => {
         let checkActive = document.querySelector("input[name=showFromToday]");
         checkActive.addEventListener("change", function() {
             if (!this.checked){
-                showReleaseRoomPage();
+                showTestDrivePage();
             }
         });
     });
 }
 
-const deleteRelease = (id) => {
+const deleteTestDrive = (id) => {
     let data = {
-        "id_release": id
+        "id_test_drive": id
     }
-    postData('/release-room/delete', data).then(response => {
+    postData('/testdrive/delete', data).then(response => {
         if(response.ok){
             alert("Usunięto");
-            showReleaseRoomPage();
+            showTestDrivePage();
         }
         else{
             alert("Wystąpił błąd");
@@ -74,25 +77,28 @@ const deleteRelease = (id) => {
     });
 }
 
-const getActiveOrdersOptionList = async () => {
-    let data = await getData('/orders/getReadyOrders');
+const getTestCarsOptionList = async () => {
+    let data = await getData('/units/getTestCars');
     let str = '';
     for(let i=0; i<data.length; i++){
-        str += '<option value="'+data[i].id_order+'">'+data[i].unit.customer.surname + ' ' + data[i].unit.customer.firstName + ' | ' + data[i].unit.car.model + ' | ' + data[i].unit.value + '</option>';
+        str += '<option value="'+data[i].id_unit+'">'+data[i].car.model + ' ' + data[i].car.version + ' | ' + data[i].car.engine + '</option>';
     }
     return str;
 }
 
-const showAddReleasePage = async () => {
+const showAddTestDrivePage = async () => {
     let employees = await getEmployeesOptionList();
-    let orders = await getActiveOrdersOptionList();
+    let units = await getTestCarsOptionList();
+    let customers = await getCustomersOptionList();
     let container = document.getElementById("content");
     container.innerHTML = `
     <form>
     <label for="employees">Pracownik:</label>
     <select id="employees" name="employees">`+employees+`</select></br>
-    <label for="order">Zamówienie</label>
-    <select id="order" name="order">`+orders+`</select></br>
+    <label for="customers">Klient:</label>
+    <select id="customers" name="customers">`+customers+`</select></br>
+    <label for="unit">Pojazd</label>
+    <select id="unit" name="unit">`+units+`</select></br>
     <label for="date">Data</label>
     <input type="date" id="date" name="date" value="2021-01-01">
     <label for="time">Godzina</label>
@@ -112,22 +118,23 @@ const showAddReleasePage = async () => {
         <option value="16:00">16:00</option>
     </select>
     </form>
-    <button id="addRelease">Dodaj</button>
+    <button id="addTestDrive">Dodaj</button>
     `;
 
-    let addReleaseBtn = document.getElementById("addRelease");
-    addReleaseBtn.addEventListener("click", addRelease);
+    let addTestDriveBtn = document.getElementById("addTestDrive");
+    addTestDriveBtn.addEventListener("click", addTestDrive);
 }
 
-const addRelease = () => {
+const addTestDrive = () => {
     let date = document.getElementById("date").value +'T'+ document.getElementById("time").value;
     let data = {
-        "id_order": document.getElementById("order").value,
+        "id_unit": document.getElementById("unit").value,
         "id_employee": document.getElementById("employees").value,
+        "id_customer": document.getElementById("customers").value,
         "date": date
     }
     console.log(data);
-    postData('/release-room/add', data).then(response => {
+    postData('/testdrive/add', data).then(response => {
         if(response.ok){
             alert("Dodano");
             showReleaseRoomPage();

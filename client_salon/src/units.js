@@ -10,7 +10,7 @@ const showActiveUnitsList = () => {
             str += '<label for="checkActive">Pokaż wszystkie egzemplarze</label><input type="checkbox" id="checkActive" name="checkActive">';
             str += '<table>';
             for(let i=0; i<units.length; i++){
-                str += '<tr><td>' + units[i].status + '</td>' + '<td>' + units[i].car.model + '</td>' + '<td>';
+                str += '<tr><td>'+units[i].id_unit+'</td><td>' + units[i].status + '</td>' + '<td>' + units[i].car.model + '</td>' + '<td>';
                 str += units[i].car.engine + '</td>' + '<td>' + units[i].car.version + '</td><td>' + units[i].color;
                 str += '</td><td>'+units[i].value+'</td><td>'+units[i].customer.surname+'</td><td>'+units[i].customer.firstName+'</td></tr>';
             }

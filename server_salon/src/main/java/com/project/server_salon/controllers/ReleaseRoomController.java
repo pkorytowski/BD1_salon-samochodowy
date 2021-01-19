@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Map;
@@ -43,6 +44,36 @@ public class ReleaseRoomController {
         if (c!=null){
             try{
                 PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.pokoj_wydan_widok", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next())  {
+                    releases.add(new Release(rs.getInt("id_pokoj_wydan"),
+                            rs.getInt("id_pracownika"),
+                            rs.getString("imie"),
+                            rs.getString("nazwisko"),
+                            rs.getInt("id_zamowienia"),
+                            rs.getTimestamp("data")));
+                }
+                rs.close();
+                stmt.close();
+            }
+            catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return releases;
+    }
+
+    @GetMapping("/getAllFromToday")
+    public ArrayList<Release> getAllFromToday(){
+        ArrayList<Release> releases = new ArrayList<>();
+        if(!getConn()){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
+        }
+        if (c!=null){
+            try{
+                LocalDate date = LocalDate.now();
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.pokoj_wydan_widok where data>=?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                stmt.setObject(1, date);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     releases.add(new Release(rs.getInt("id_pokoj_wydan"),
@@ -180,7 +211,7 @@ public class ReleaseRoomController {
     }
 
     @PostMapping("/add")
-    public void addTestDrive(@RequestBody Map<String, String> request){
+    public void addRelease(@RequestBody Map<String, String> request){
         int id_employee, id_order;
         LocalDateTime date;
         Timestamp ts;
@@ -202,6 +233,32 @@ public class ReleaseRoomController {
             stmt.setInt(1, id_employee);
             stmt.setInt(2, id_order);
             stmt.setTimestamp(3, ts);
+            int i=stmt.executeUpdate();
+            if(i!=1){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "A conflict occured");
+            }
+        }
+        catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @PostMapping("/delete")
+    public void deleteRelease(@RequestBody Map<String, String> request){
+        int id_release;
+        try{
+            id_release = Integer.parseInt(request.get("id_release"));
+        }
+        catch(Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form");
+        }
+
+        try{
+            if(!getConn()){
+                throw new Exception();
+            }
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM salon.pokoj_wydan where id_pokoj_wydan=?");
+            stmt.setInt(1, id_release);
             int i=stmt.executeUpdate();
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "A conflict occured");

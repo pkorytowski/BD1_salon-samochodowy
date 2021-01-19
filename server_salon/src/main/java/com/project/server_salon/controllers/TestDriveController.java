@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
@@ -40,12 +42,49 @@ public class TestDriveController {
         }
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_jazda_probna, id_pracownika, id_klienta, id_egzemplarza, data FROM salon.jazda_probna", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.jazda_probna_widok", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     testDrives.add(new TestDrive(rs.getInt("id_jazda_probna"),
                             rs.getInt("id_pracownika"),
+                            rs.getString("nazwisko_p"),
+                            rs.getString("imie_p"),
                             rs.getInt("id_klienta"),
+                            rs.getString("nazwisko_k"),
+                            rs.getString("imie_k"),
+                            rs.getInt("id_egzemplarza"),
+                            rs.getTimestamp("data")));
+                }
+                rs.close();
+                stmt.close();
+            }
+            catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return testDrives;
+    }
+
+    @GetMapping("/getAllFromToday")
+    public ArrayList<TestDrive> getAllFromToday(){
+        ArrayList<TestDrive> testDrives = new ArrayList<>();
+        if(!getConn()){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
+        }
+        if (c!=null){
+            try{
+                LocalDate date = LocalDate.now();
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.jazda_probna_widok where data>=?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                stmt.setObject(1, date);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next())  {
+                    testDrives.add(new TestDrive(rs.getInt("id_jazda_probna"),
+                            rs.getInt("id_pracownika"),
+                            rs.getString("nazwisko_p"),
+                            rs.getString("imie_p"),
+                            rs.getInt("id_klienta"),
+                            rs.getString("nazwisko_k"),
+                            rs.getString("imie_k"),
                             rs.getInt("id_egzemplarza"),
                             rs.getTimestamp("data")));
                 }
@@ -83,7 +122,11 @@ public class TestDriveController {
                 while (rs.next())  {
                     testDrives.add(new TestDrive(rs.getInt("id_jazda_probna"),
                             rs.getInt("id_pracownika"),
+                            rs.getString("nazwisko_p"),
+                            rs.getString("imie_p"),
                             rs.getInt("id_klienta"),
+                            rs.getString("nazwisko_k"),
+                            rs.getString("imie_k"),
                             rs.getInt("id_egzemplarza"),
                             rs.getTimestamp("data")));
                 }
@@ -118,7 +161,11 @@ public class TestDriveController {
                 while (rs.next())  {
                     testDrives.add(new TestDrive(rs.getInt("id_jazda_probna"),
                             rs.getInt("id_pracownika"),
+                            rs.getString("nazwisko_p"),
+                            rs.getString("imie_p"),
                             rs.getInt("id_klienta"),
+                            rs.getString("nazwisko_k"),
+                            rs.getString("imie_k"),
                             rs.getInt("id_egzemplarza"),
                             rs.getTimestamp("data")));
                 }
@@ -159,7 +206,11 @@ public class TestDriveController {
                 while (rs.next())  {
                     testDrives.add(new TestDrive(rs.getInt("id_jazda_probna"),
                             rs.getInt("id_pracownika"),
+                            rs.getString("nazwisko_p"),
+                            rs.getString("imie_p"),
                             rs.getInt("id_klienta"),
+                            rs.getString("nazwisko_k"),
+                            rs.getString("imie_k"),
                             rs.getInt("id_egzemplarza"),
                             rs.getTimestamp("data")));
                 }
@@ -176,13 +227,14 @@ public class TestDriveController {
     @PostMapping("/add")
     public void addTestDrive(@RequestBody Map<String, String> request){
         int id_employee, id_customer, id_unit;
-        Timestamp date;
-
+        LocalDateTime date;
+        Timestamp ts;
         try{
             id_employee = Integer.parseInt(request.get("id_employee"));
             id_customer = Integer.parseInt(request.get("id_customer"));
             id_unit = Integer.parseInt(request.get("id_unit"));
-            date = Timestamp.valueOf(request.get("date"));
+            date = LocalDateTime.parse(request.get("date"));
+            ts = Timestamp.valueOf(date);
         }
         catch(Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form");
@@ -196,7 +248,33 @@ public class TestDriveController {
             stmt.setInt(1, id_employee);
             stmt.setInt(2, id_customer);
             stmt.setInt(3, id_unit);
-            stmt.setTimestamp(4, date);
+            stmt.setTimestamp(4, ts);
+            int i=stmt.executeUpdate();
+            if(i!=1){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "A conflict occured");
+            }
+        }
+        catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
+        }
+    }
+
+    @PostMapping("/delete")
+    public void deleteTestDrive(@RequestBody Map<String, String> request){
+        int id_test_drive;
+        try{
+            id_test_drive = Integer.parseInt(request.get("id_test_drive"));
+        }
+        catch(Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form");
+        }
+
+        try{
+            if(!getConn()){
+                throw new Exception();
+            }
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM salon.jazda_probna where id_jazda_probna=?");
+            stmt.setInt(1, id_test_drive);
             int i=stmt.executeUpdate();
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "A conflict occured");

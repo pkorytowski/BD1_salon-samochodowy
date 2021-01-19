@@ -66,7 +66,12 @@ const displayManagerMenu = () => {
             <li><a href="#" id="showAddRelease">Dodaj nowe wydanie</a></li>
         </ul>
         </li>
-        <li><a href="#" id="showTestDrive">Jazda próbna</a></li>
+        <li><a href="#" id="showTest">Jazda próbna</a>
+        <ul>
+            <li><a href="#" id="showTestDrive">Pokaż aktualne jazdy próbne</a></li>
+            <li><a href="#" id="showAddTestDrive">Dodaj jazdę próbną</a></li>
+        </ul>
+        </li>
     </ol>
     `;
 
@@ -105,6 +110,13 @@ const displayManagerMenu = () => {
 
     let showAddRelease = document.getElementById("showAddRelease");
     showAddRelease.addEventListener("click", showAddReleasePage);
+
+    let showTestDrive = document.getElementById("showTestDrive");
+    showTestDrive.addEventListener("click", showTestDrivePage);
+
+    let showAddTestDrive = document.getElementById("showAddTestDrive");
+    showAddTestDrive.addEventListener("click", showAddTestDrivePage);
+
 
     let container = document.getElementById("content");
     container.innerHTML = `
