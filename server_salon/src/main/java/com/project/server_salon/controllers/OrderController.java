@@ -84,6 +84,59 @@ public class OrderController {
         return orders;
     }
 
+    @GetMapping("/getCustomerActiveOrders")
+    @ResponseBody
+    public ArrayList<Order> getCustomerActiveOrders(@RequestParam int id_customer){
+        ArrayList<Order> orders = new ArrayList<Order>();
+        if(!getConn()){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
+        }
+        if (c!=null){
+            try{
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.zamowienia_widok where id_klienta=? and status<>'zakonczono'", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                stmt.setInt(1, id_customer);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next())  {
+                    orders.add(new Order(rs.getInt("id_zamowienia"),
+                            new Employee(rs.getInt("id_pracownika"),
+                                    rs.getString("imie"),
+                                    rs.getString("nazwisko"),
+                                    rs.getString("stanowisko"),
+                                    rs.getString("email")),
+                            new Unit(rs.getInt("id_egzemplarza"),
+                                    rs.getInt("id_koloru"),
+                                    rs.getString("kolor"),
+                                    new CustomerShort(rs.getInt("id_klienta"),
+                                            rs.getString("imie_k"),
+                                            rs.getString("nazwisko_k"),
+                                            rs.getInt("telefon_k"),
+                                            rs.getString("email_k")),
+                                    new Car(rs.getInt("id_samochodu"),
+                                            rs.getInt("id_silnik"),
+                                            rs.getString("silnik"),
+                                            rs.getInt("id_wersje_wyposazenia"),
+                                            rs.getString("wersja"),
+                                            rs.getInt("id_modelu"),
+                                            rs.getString("model"),
+                                            rs.getInt("rok_modelowy"),
+                                            rs.getDouble("cena"),
+                                            rs.getInt("aktywny")),
+                                    rs.getString("status_egz"),
+                                    rs.getDouble("cena_wyjsciowa")),
+                            rs.getString("status"),
+                            rs.getDouble("rabat"),
+                            rs.getDouble("cena_koncowa")));
+                }
+                rs.close();
+                stmt.close();
+            }
+            catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return orders;
+    }
+
     @GetMapping("/getReadyOrders")
     public ArrayList<Order> getReadyOrders(){
         ArrayList<Order> orders = new ArrayList<Order>();
@@ -143,6 +196,59 @@ public class OrderController {
         if (c!=null){
             try{
                 PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.zamowienia_widok", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next())  {
+                    orders.add(new Order(rs.getInt("id_zamowienia"),
+                            new Employee(rs.getInt("id_pracownika"),
+                                    rs.getString("imie"),
+                                    rs.getString("nazwisko"),
+                                    rs.getString("stanowisko"),
+                                    rs.getString("email")),
+                            new Unit(rs.getInt("id_egzemplarza"),
+                                    rs.getInt("id_koloru"),
+                                    rs.getString("kolor"),
+                                    new CustomerShort(rs.getInt("id_klienta"),
+                                            rs.getString("imie_k"),
+                                            rs.getString("nazwisko_k"),
+                                            rs.getInt("telefon_k"),
+                                            rs.getString("email_k")),
+                                    new Car(rs.getInt("id_samochodu"),
+                                            rs.getInt("id_silnik"),
+                                            rs.getString("silnik"),
+                                            rs.getInt("id_wersje_wyposazenia"),
+                                            rs.getString("wersja"),
+                                            rs.getInt("id_modelu"),
+                                            rs.getString("model"),
+                                            rs.getInt("rok_modelowy"),
+                                            rs.getDouble("cena"),
+                                            rs.getInt("aktywny")),
+                                    rs.getString("status_egz"),
+                                    rs.getDouble("cena_wyjsciowa")),
+                            rs.getString("status"),
+                            rs.getDouble("rabat"),
+                            rs.getDouble("cena_koncowa")));
+                }
+                rs.close();
+                stmt.close();
+            }
+            catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return orders;
+    }
+
+    @GetMapping("/getCustomerAll")
+    @ResponseBody
+    public ArrayList<Order> getCustomerAll(@RequestParam int id_customer){
+        ArrayList<Order> orders = new ArrayList<Order>();
+        if(!getConn()){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
+        }
+        if (c!=null){
+            try{
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.zamowienia_widok where id_klienta=? ", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                stmt.setInt(1, id_customer);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     orders.add(new Order(rs.getInt("id_zamowienia"),

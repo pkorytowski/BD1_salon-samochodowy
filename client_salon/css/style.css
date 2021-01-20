@@ -32,6 +32,7 @@ header h1 {
 nav {
     width: 100%;
     text-align: center;
+    overflow: hidden;
 }
 
 ol {

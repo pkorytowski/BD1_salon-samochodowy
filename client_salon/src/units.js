@@ -6,17 +6,20 @@ const showActiveUnitsList = () => {
             units.push(data[i]);
         }
         let str = '';
+        str += '<label for="checkActive">Pokaż wszystkie egzemplarze</label><input type="checkbox" id="checkActive" name="checkActive">';
         if (units.length!==0){
-            str += '<label for="checkActive">Pokaż wszystkie egzemplarze</label><input type="checkbox" id="checkActive" name="checkActive">';
             str += '<table>';
             for(let i=0; i<units.length; i++){
                 str += '<tr><td>'+units[i].id_unit+'</td><td>' + units[i].status + '</td>' + '<td>' + units[i].car.model + '</td>' + '<td>';
                 str += units[i].car.engine + '</td>' + '<td>' + units[i].car.version + '</td><td>' + units[i].color;
-                str += '</td><td>'+units[i].value+'</td><td>'+units[i].customer.surname+'</td><td>'+units[i].customer.firstName+'</td></tr>';
+                str += '</td><td>'+units[i].value+'</td><td>'+units[i].customer.surname+'</td><td>'+units[i].customer.firstName+'</td>';
+                str += '<td><button onclick="changeUnit('+units[i].id_unit+');">Zmień status</button></td>';
+                if(units[i].status==='skonfigurowano'){
+                    str += '<td><button onclick="deleteUnit('+units[i].id_unit+');">Usuń pojazd</button></td>';
+                }
+                str += '</tr>';
             }
             str += '</table>';
-            str += '<button id="deleteUnit">Usuń pojazd</button>';
-            str += '<button id="changeUnitStatus">Zmień status</button>';
         }
         container.innerHTML = str;
 
@@ -26,12 +29,6 @@ const showActiveUnitsList = () => {
                 showUnitsList();
             }
         });
-
-        let deleteBtn = document.getElementById("deleteUnit");
-        deleteBtn.addEventListener("click", showDeleteUnit);
-
-        let changeUnitStatusBtn = document.getElementById("changeUnitStatus");
-        changeUnitStatusBtn.addEventListener("click", showChangeUnitStatus);
     });
 }
 
@@ -43,13 +40,18 @@ const showUnitsList = () => {
             units.push(data[i]);
         }
         let str = '';
+        str += '<label for="checkActive">Pokaż wszystkie egzemplarze</label><input type="checkbox" id="checkActive" name="checkActive" checked/>';
         if (units.length!=0){
-            str += '<label for="checkActive">Pokaż wszystkie egzemplarze</label><input type="checkbox" id="checkActive" name="checkActive" checked/>';
             str += '<table>';
             for(let i=0; i<units.length; i++){
                 str += '<tr><td>' + units[i].status + '</td>' + '<td>' + units[i].car.model + '</td>' + '<td>';
                 str += units[i].car.engine + '</td>' + '<td>' + units[i].car.version + '</td><td>' + units[i].color;
-                str += '</td><td>'+units[i].value+'</td><td>'+units[i].customer.surname+'</td><td>'+units[i].customer.firstName+'</td></tr>';
+                str += '</td><td>'+units[i].value+'</td><td>'+units[i].customer.surname+'</td><td>'+units[i].customer.firstName+'</td>';
+                str += '<td><button onclick="changeUnit('+units[i].id_unit+');">Zmień status</button></td>';
+                if(units[i].status==='skonfigurowano'){
+                    str += '<td><button onclick="deleteUnit('+units[i].id_unit+');">Usuń pojazd</button></td>';
+                }
+                str += '</tr>';
             }
             str += '</table>';
             str += '<button id="deleteUnit">Usuń pojazd</button>';
@@ -63,37 +65,35 @@ const showUnitsList = () => {
                 showActiveUnitsList();
             }
         });
-
-        let deleteBtn = document.getElementById("deleteUnit");
-        deleteBtn.addEventListener("click", showDeleteUnit);
-
-        let changeUnitStatusBtn = document.getElementById("changeUnitStatus");
-        changeUnitStatusBtn.addEventListener("click", showChangeUnitStatus);
     });
 }
 
-const showDeleteUnit = () => {
+const showCustomerUnitsList = () => {
     let container = document.getElementById("content");
     let units = [];
-    getData("/units/getActiveUnits").then(data => {
+    let params = new URLSearchParams({
+        id_customer:sessionStorage.getItem("user")
+    })
+    getDataWithParams("/units/getCustomerActiveUnits", params).then(data => {
         for(let i=0;i<data.length;i++){
             units.push(data[i]);
         }
         let str = '';
-        if (units.length!=0){
-            str += '<form id="deleteForm"><table>';
+        if (units.length!==0){
+            str += '<table>';
             for(let i=0; i<units.length; i++){
-                str += '<tr><td><input type="radio" name="unit" value="'+units[i].id_unit+'"/></td><td>' + units[i].status + '</td>' + '<td>' + units[i].car.model + '</td>' + '<td>';
+                str += '<tr><td>'+units[i].id_unit+'</td><td>' + units[i].status + '</td>' + '<td>' + units[i].car.model + '</td>' + '<td>';
                 str += units[i].car.engine + '</td>' + '<td>' + units[i].car.version + '</td><td>' + units[i].color;
-                str += '</td><td>'+units[i].value+'</td></tr>';
+                str += '</td><td>'+units[i].value+'</td><td>'+units[i].customer.surname+'</td><td>'+units[i].customer.firstName+'</td>';
+                if(units[i].status==='skonfigurowano'){
+                    str += '<td><button onclick="deleteUnit('+units[i].id_unit+');">Usuń pojazd</button></td>';
+                }
+                str += '</tr>';
             }
-            str += '</table></form>';
-            str += '<button id="deleteUnit">Usuń</button></br>';
+            str += '</table>';
+
         }
         container.innerHTML = str;
-
-        let deleteBtn = document.getElementById("deleteUnit");
-        deleteBtn.addEventListener("click", deleteUnit);
     });
 }
 
@@ -123,7 +123,7 @@ const changeUnit = (id) => {
     let container = document.getElementById("content");
     container.innerHTML = `
     <select id="statusSelect">
-    <option value="skonfigurowano" selected>utworzono</option>
+    <option value="skonfigurowano" selected>skonfigurowano</option>
     <option value="składnik zamowienia">w zamówieniu</option>
     <option value="na placu">na placu</option>
     <option value="transakcja zakonczona">transakcja zakończona</option>
@@ -151,23 +151,24 @@ const changeUnit = (id) => {
     });
 }
 
-const deleteUnit = () => {
-    let id = document.getElementById("deleteForm").elements["unit"].value;
-
-    if (id != null){
-        let data = {
-            "id_unit":id
-        }
-        postData('/units/delete', data).then(response => {
-            if(response.ok){
-                alert("Usunięto pojazd");
-                showUnitsList();
+const deleteUnit = (id) => {
+    let data = {
+        "id_unit":id
+    }
+    postData('/units/delete', data).then(response => {
+        if(response.ok){
+            alert("Usunięto pojazd");
+            if(sessionStorage.getItem("role")==="ROLE_CLIENT"){
+                showCustomerUnitsList();
             }
             else{
-                alert("Nie można usuwać pojazdów, które są częścią zamówienia lub są na placu");
+                showUnitsList();
             }
-        });
-    }
+        }
+        else{
+            alert("Nie można usuwać pojazdów, które są częścią zamówienia lub są na placu");
+        }
+    });
 }
 
 const getCustomersOptionList = async () => {
@@ -199,6 +200,22 @@ const showAddUnitPage = async () => {
     addBtn.addEventListener("click", addNewUnit);
 }
 
+const showCustomerAddUnitPage = async () => {
+    let container = document.getElementById("content");
+    let cars = await getCarOptionList();
+    let colors = await getColorOptionList();
+    container.innerHTML = `
+        <label for="selectCar">Samochód</label>
+        <select id="selectCar" name="selectCar">`+ cars +`</select></br>
+        <label for="selectColor">Kolor</label>
+        <select id="selectColor" name="selectColor">`+ colors +`</select></br>
+        <button id="addNewUnitBtn">Dodaj</button>
+    `;
+
+    let addBtn = document.getElementById("addNewUnitBtn");
+    addBtn.addEventListener("click", addNewUnit);
+}
+
 const addNewUnit = () =>{
     let user;
     if(sessionStorage.getItem("role")==="ROLE_CLIENT"){
@@ -220,7 +237,12 @@ const addNewUnit = () =>{
     postData("/units/add", data).then(response => {
         if(response.ok){
             alert("Dodano pojazd!");
-            showUnitsList();
+            if(sessionStorage.getItem("role")==="ROLE_CLIENT"){
+                showCustomerUnitsList();
+            }
+            else{
+                showUnitsList();
+            }
         }
         else{
             alert("Wystąpił problem z dodaniem pojazdu");

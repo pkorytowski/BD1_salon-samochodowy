@@ -65,6 +65,39 @@ public class TestDriveController {
         return testDrives;
     }
 
+    @GetMapping("/getCustomerAll")
+    @ResponseBody
+    public ArrayList<TestDrive> getCustomerAll(@RequestParam int id_customer){
+        ArrayList<TestDrive> testDrives = new ArrayList<>();
+        if(!getConn()){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
+        }
+        if (c!=null){
+            try{
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.jazda_probna_widok where id_klienta=?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                stmt.setInt(1, id_customer);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next())  {
+                    testDrives.add(new TestDrive(rs.getInt("id_jazda_probna"),
+                            rs.getInt("id_pracownika"),
+                            rs.getString("nazwisko_p"),
+                            rs.getString("imie_p"),
+                            rs.getInt("id_klienta"),
+                            rs.getString("nazwisko_k"),
+                            rs.getString("imie_k"),
+                            rs.getInt("id_egzemplarza"),
+                            rs.getTimestamp("data")));
+                }
+                rs.close();
+                stmt.close();
+            }
+            catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return testDrives;
+    }
+
     @GetMapping("/getAllFromToday")
     public ArrayList<TestDrive> getAllFromToday(){
         ArrayList<TestDrive> testDrives = new ArrayList<>();
@@ -76,6 +109,41 @@ public class TestDriveController {
                 LocalDate date = LocalDate.now();
                 PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.jazda_probna_widok where data>=?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 stmt.setObject(1, date);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next())  {
+                    testDrives.add(new TestDrive(rs.getInt("id_jazda_probna"),
+                            rs.getInt("id_pracownika"),
+                            rs.getString("nazwisko_p"),
+                            rs.getString("imie_p"),
+                            rs.getInt("id_klienta"),
+                            rs.getString("nazwisko_k"),
+                            rs.getString("imie_k"),
+                            rs.getInt("id_egzemplarza"),
+                            rs.getTimestamp("data")));
+                }
+                rs.close();
+                stmt.close();
+            }
+            catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return testDrives;
+    }
+
+    @GetMapping("/getCustomerAllFromToday")
+    @ResponseBody
+    public ArrayList<TestDrive> getCustomerAllFromToday(@RequestParam int id_customer){
+        ArrayList<TestDrive> testDrives = new ArrayList<>();
+        if(!getConn()){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
+        }
+        if (c!=null){
+            try{
+                LocalDate date = LocalDate.now();
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.jazda_probna_widok where id_klienta=? and data>=?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                stmt.setInt(1, id_customer);
+                stmt.setObject(2, date);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     testDrives.add(new TestDrive(rs.getInt("id_jazda_probna"),

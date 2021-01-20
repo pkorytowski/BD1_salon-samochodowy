@@ -62,6 +62,70 @@ const showFromTodayTestDrivePage = () => {
     });
 }
 
+const showCustomerTestDrivePage = () => {
+    let container = document.getElementById("content");
+    let test_drives = [];
+    let urldata = new URLSearchParams({
+        id_customer:sessionStorage.getItem("user")
+    })
+    getDataWithParams('/testdrive/getCustomerAll', urldata).then(data => {
+        for(let i=0; i<data.length;i++){
+            test_drives.push(data[i]);
+        }
+        let str = '';
+        str += '<label for="showFromToday">Pokaż od dzisiaj</label><input type="checkbox" id="showFromToday" name="showFromToday">';
+        if(test_drives.length!==0){
+            str += '<table>';
+            for(let i=0; i<test_drives.length; i++){
+                str += '<tr><td>'+test_drives[i].employeeSurname+'</td>';
+                str += '<td>'+test_drives[i].employeeName+'</td>';
+                str += '<td>'+test_drives[i].id_unit+'</td>';
+                str += '<td>'+test_drives[i].date+'</td>';
+                str += '</tr>';
+            }
+        }
+        container.innerHTML = str;
+        let checkActive = document.querySelector("input[name=showFromToday]");
+        checkActive.addEventListener("change", function() {
+            if (this.checked){
+                showCustomerFromTodayTestDrivePage();
+            }
+        });
+    });
+}
+
+const showCustomerFromTodayTestDrivePage = () => {
+    let container = document.getElementById("content");
+    let test_drives = [];
+    let urldata = new URLSearchParams({
+        id_customer:sessionStorage.getItem("user")
+    })
+    getDataWithParams('/testdrive/getCustomerAllFromToday', urldata).then(data => {
+        for(let i=0; i<data.length;i++){
+            test_drives.push(data[i]);
+        }
+        let str = '';
+        str += '<label for="showFromToday">Pokaż od dzisiaj</label><input type="checkbox" id="showFromToday" name="showFromToday" checked>';
+        if(test_drives.length!==0){
+            str += '<table>';
+            for(let i=0; i<test_drives.length; i++){
+                str += '<tr><td>'+test_drives[i].employeeSurname+'</td>';
+                str += '<td>'+test_drives[i].employeeName+'</td>';
+                str += '<td>'+test_drives[i].id_unit+'</td>';
+                str += '<td>'+test_drives[i].date+'</td>';
+                str += '</tr>';
+            }
+        }
+        container.innerHTML = str;
+        let checkActive = document.querySelector("input[name=showFromToday]");
+        checkActive.addEventListener("change", function() {
+            if (!this.checked){
+                showCustomerTestDrivePage();
+            }
+        });
+    });
+}
+
 const deleteTestDrive = (id) => {
     let data = {
         "id_test_drive": id
@@ -125,15 +189,57 @@ const showAddTestDrivePage = async () => {
     addTestDriveBtn.addEventListener("click", addTestDrive);
 }
 
+const showCustomerAddTestDrivePage = async () => {
+    let employees = await getEmployeesOptionList();
+    let units = await getTestCarsOptionList();
+    let container = document.getElementById("content");
+    container.innerHTML = `
+    <form>
+    <label for="employees">Pracownik:</label>
+    <select id="employees" name="employees">`+employees+`</select></br>
+    <label for="unit">Pojazd</label>
+    <select id="unit" name="unit">`+units+`</select></br>
+    <label for="date">Data</label>
+    <input type="date" id="date" name="date" value="2021-01-01">
+    <label for="time">Godzina</label>
+    <select id="time" name="time">
+        <option value="10:00">10:00</option>
+        <option value="10:30">10:30</option>
+        <option value="11:00">11:00</option>
+        <option value="11:30">11:30</option>
+        <option value="12:00">12:00</option>
+        <option value="12:30">12:30</option>
+        <option value="13:00">13:00</option>
+        <option value="13:30">13:30</option>
+        <option value="14:00">14:00</option>
+        <option value="14:30">14:30</option>
+        <option value="15:00">15:00</option>
+        <option value="15:30">15:30</option>
+        <option value="16:00">16:00</option>
+    </select>
+    </form>
+    <button id="addTestDrive">Dodaj</button>
+    `;
+
+    let addTestDriveBtn = document.getElementById("addTestDrive");
+    addTestDriveBtn.addEventListener("click", addTestDrive);
+}
+
 const addTestDrive = () => {
     let date = document.getElementById("date").value +'T'+ document.getElementById("time").value;
+    let id;
+    if(sessionStorage.getItem("role")==='ROLE_CLIENT'){
+        id = sessionStorage.getItem("user");
+    }
+    else{
+        id = document.getElementById("customers").value;
+    }
     let data = {
         "id_unit": document.getElementById("unit").value,
         "id_employee": document.getElementById("employees").value,
-        "id_customer": document.getElementById("customers").value,
+        "id_customer": id,
         "date": date
     }
-    console.log(data);
     postData('/testdrive/add', data).then(response => {
         if(response.ok){
             alert("Dodano");

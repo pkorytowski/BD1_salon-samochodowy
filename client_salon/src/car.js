@@ -10,6 +10,7 @@ const showAvailableCarsList = () => {
         let str = '';
         if (cars.length!=0){
             str += '<table>';
+            let role = sessionStorage.getItem("role");
             for(let i=0; i<cars.length; i++){
                 let status, btnText;
                 if(cars[i].active==1){
@@ -22,8 +23,11 @@ const showAvailableCarsList = () => {
                 }
 
                 str += '<tr><td>' + cars[i].model + '</td>' + '<td>' + cars[i].version + '</td>' + '<td>';
-                str += cars[i].year + '</td>' + '<td>' + cars[i].value + '</td><td>' + status;
-                str += '</td><td><button onclick="deleteCar('+cars[i].id_car+')">Usuń</button></td><td><button onclick="activateCar('+cars[i].id_car+','+cars[i].active+')">'+btnText+'</button></td></tr>';
+                str += cars[i].year + '</td>' + '<td>' + cars[i].value + '</td><td>' + status + '</td>';
+                if(role==='ROLE_MANAGER'){
+                    str += '<td><button onclick="deleteCar('+cars[i].id_car+')">Usuń</button></td><td><button onclick="activateCar('+cars[i].id_car+','+cars[i].active+')">'+btnText+'</button></td>';
+                }
+                str += '</tr>'
             }
             str += '</table>';
         }

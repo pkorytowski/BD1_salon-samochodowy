@@ -19,6 +19,38 @@ const showCurrentOrdersPage = async () => {
 
 }
 
+const showCustomerCurrentOrdersPage = async () => {
+    let container = document.getElementById("content");
+    let ordersStr = await getCustomerOrdersTable("/orders/getCustomerActiveOrders");
+    let str = '';
+    str += '<label for="checkActive">Pokaż wszystkie zamówienia</label><input type="checkbox" id="checkActive" name="checkActive">';
+    str += ordersStr;
+    container.innerHTML = str;
+
+    let checkActive = document.querySelector("input[name=checkActive]");
+    checkActive.addEventListener("change", function() {
+        if (this.checked){
+            showCustomerOrdersPage();
+        }
+    });
+}
+
+const showCustomerOrdersPage = async () => {
+    let container = document.getElementById("content");
+    let ordersStr = await getOrdersTable("/orders/getCustomerAll");
+    let str = '';
+    str += '<label for="checkActive">Pokaż wszystkie zamówienia</label><input type="checkbox" id="checkActive" name="checkActive" checked>';
+    str += ordersStr;
+    container.innerHTML = str;
+
+    let checkActive = document.querySelector("input[name=checkActive]");
+    checkActive.addEventListener("change", function() {
+        if (!this.checked){
+            showCustomerCurrentOrdersPage();
+        }
+    });
+}
+
 const showOrdersPage = async () => {
     let container = document.getElementById("content");
     let ordersStr = await getOrdersTable("/orders/getAll");
@@ -45,7 +77,7 @@ const showAddOrderPage = async () =>{
         <label for="employees">Pracownik</label>
         <select id="employees" name="employees">`+employees+`</select>
         <label for="discount">Rabat</label>
-        <input type="text" id="discount" name="discount"/>
+        <input type="text" id="discount" name="discount" value="0"/>
         <button id="addOrderBtn">Utwórz</button>
     `;
 
@@ -67,6 +99,7 @@ const addOrder = () => {
             "status": "utworzono",
             "discount": discount
         }
+        console.log(data)
         postData('/orders/add', data).then(response => {
             if(response.ok){
                 alert("Dodano zamówienie!");
@@ -104,6 +137,26 @@ const getEmployeesOptionList = async () => {
     let str = '';
     for(let i=0; i<data.length; i++){
         str += '<option value="'+data[i].id_employee+'">' + data[i].surname + ' ' + data[i].name + '</option>';
+    }
+    return str;
+}
+
+const getCustomerOrdersTable = async (path, id) => {
+    let params = new URLSearchParams({
+        id_customer:sessionStorage.getItem("user")
+    })
+    let orders = await getDataWithParams(path, params);
+    let str = '';
+    if (orders.length!==0){
+        str += '<table>';
+        for(let i=0; i<orders.length; i++){
+            str += '<tr><td>' + orders[i].status + '</td>' + '<td>' + orders[i].employee.surname + '</td>' + '<td>';
+            str += orders[i].employee.name + '</td><td>' + orders[i].unit.car.model;
+            str += '</td><td>'+orders[i].unit.car.engine+'</td><td>'+orders[i].unit.car.version+ '</td>';
+            str += '<td>'+orders[i].unit.car.year+'</td><td>'+orders[i].discount+'</td><td>'+orders[i].value+'</td>';
+            str += '</tr>';
+        }
+        str += '</table>';
     }
     return str;
 }
@@ -170,7 +223,7 @@ const showChangeOrderStatus = (id) => {
     let container = document.getElementById("content");
     container.innerHTML = `
         <select id="orderStatus">
-            <option value="utworzono" selected>utworzono</option>
+            <option value="skonfigurowano" selected>skonfigurowano</option>
             <option value="zamowienie zlozone">zamówienie złożone</option>
             <option value="wplacona zaliczka">wpłacona zaliczka</option>
             <option value="gotowe do odbioru">gotowe do odbioru</option>

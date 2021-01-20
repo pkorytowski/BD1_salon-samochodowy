@@ -58,13 +58,13 @@ public class LoginController {
 
         switch (role){
             case "ROLE_SELLER":
-                query = "SELECT email, haslo FROM salon.pracownicy p WHERE p.email=? and p.stanowisko='sprzedawca'";
+                query = "SELECT id_pracownika as id, email, haslo FROM salon.pracownicy p WHERE p.email=? and p.stanowisko='sprzedawca'";
                 break;
             case "ROLE_MANAGER":
-                query = "SELECT email, haslo FROM salon.pracownicy p WHERE p.email=? and p.stanowisko='kierownik'";
+                query = "SELECT id_pracownika as id, email, haslo FROM salon.pracownicy p WHERE p.email=? and p.stanowisko='kierownik'";
                 break;
             case "ROLE_CLIENT":
-                query = "SELECT email, haslo FROM salon.klienci k WHERE k.email=?";
+                query = "SELECT id_klienta as id, email, haslo FROM salon.klienci k WHERE k.email=?";
                 break;
             default:
                 query = "";
@@ -79,10 +79,11 @@ public class LoginController {
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     String pass = rs.getString("haslo");
+                    int id = rs.getInt("id");
                     if(pass.equals(pwd)){
                         String token = getJWTToken(username, role);
                         User user = new User();
-                        user.setUser(username);
+                        user.setUser(id);
                         user.setToken(token);
                         user.setRole(role);
                         return user;

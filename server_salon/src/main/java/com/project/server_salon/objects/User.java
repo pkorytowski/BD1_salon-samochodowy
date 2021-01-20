@@ -1,13 +1,13 @@
 package com.project.server_salon.objects;
 
 public class User {
-    private String user;
+    private int user;
     private String token;
     private String role;
 
-    public void setUser(String user){ this.user = user; }
+    public void setUser(int user){ this.user = user; }
 
-    public String getUser(){ return user; }
+    public int getUser(){ return user; }
 
     public void setToken(String token){ this.token = token; }
 
