@@ -38,6 +38,7 @@ public class ServerSalonApplication {
                     //.antMatchers(HttpMethod.POST, "/engines/add").hasRole("MANAGER")
                     //.antMatchers(HttpMethod.POST, "/engines/delete").hasRole("MANAGER")
                     .antMatchers(HttpMethod.POST, "/login/*").permitAll()
+                    .antMatchers(HttpMethod.POST, "/customers/add").permitAll()
                     .anyRequest().authenticated();
         }
 

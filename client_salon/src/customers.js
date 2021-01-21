@@ -56,6 +56,15 @@ const deleteCustomer = (id) => {
         alert("Wprowadzono niepoprawne id");
     }
 }
+
+const showUpdateCustomerProfile = async () => {
+    let urldata = new URLSearchParams({
+        id_customer: sessionStorage.getItem("user")
+    })
+    let customer = await getDataWithParams('/customers/getInfo', urldata);
+    showUpdateCustomer(customer);
+}
+
 const showUpdateCustomer = (customer) => {
 let container = document.getElementById("content");
 container.innerHTML = `
@@ -195,7 +204,7 @@ const updateCustomer = (id) => {
     else{
         nip = parseInt(nip);
     }
-    if(nip==null || !isNan(nip)) {
+    if(nip==null || !isNaN(nip)) {
         let phoneNumber = parseInt(document.getElementById("phoneNumber").value);
         if (isNaN(phoneNumber)) {
             alert("wprowadzono zły numer telefonu");
@@ -216,7 +225,9 @@ const updateCustomer = (id) => {
             postData('/customers/update', data).then(response => {
                 if (response.ok) {
                     alert("Zmodyfikowano");
-                    showCustomersListPage();
+                    if(sessionStorage.getItem("role")!=="ROLE_CLIENT"){
+                        showCustomersListPage();
+                    }
                 } else {
                     alert("Wystąpił problem");
                 }

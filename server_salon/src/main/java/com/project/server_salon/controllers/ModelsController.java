@@ -47,6 +47,11 @@ public class ModelsController {
                     models.add(new Model(rs.getInt("id_modelu"),
                             rs.getString("nazwa"),
                             rs.getString("typ_nadwozia"),
+                            rs.getString("opis"),
+                            rs.getInt("dlugosc"),
+                            rs.getInt("szerokosc"),
+                            rs.getInt("wysokosc"),
+                            rs.getInt("pojemnosc_bagaznika"),
                             rs.getDouble("cena_bazowa")));
                 }
                 rs.close();

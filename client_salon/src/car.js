@@ -11,6 +11,7 @@ const showAvailableCarsList = () => {
         if (cars.length!=0){
             str += '<table>';
             let role = sessionStorage.getItem("role");
+            str += '<tr><td>Model</td><td>Wersja wyposażenia</td><td>Rok modelowy</td><td>Cena bazowa</td><td>Status</td></tr>';
             for(let i=0; i<cars.length; i++){
                 let status, btnText;
                 if(cars[i].active==1){
@@ -21,9 +22,13 @@ const showAvailableCarsList = () => {
                     status = 'nieaktywny';
                     btnText = 'aktywuj';
                 }
-
-                str += '<tr><td>' + cars[i].model + '</td>' + '<td>' + cars[i].version + '</td>' + '<td>';
-                str += cars[i].year + '</td>' + '<td>' + cars[i].value + '</td><td>' + status + '</td>';
+                str += '<tr>';
+                str += '<td>' + cars[i].model + '</td>';
+                str += '<td>' + cars[i].version + '</td>';
+                str += '<td>' + cars[i].engine + '</td>';
+                str += '<td>' + cars[i].year + '</td>';
+                str += '<td>' + cars[i].value + '</td>';
+                str += '<td>' + status + '</td>';
                 if(role==='ROLE_MANAGER'){
                     str += '<td><button onclick="deleteCar('+cars[i].id_car+')">Usuń</button></td><td><button onclick="activateCar('+cars[i].id_car+','+cars[i].active+')">'+btnText+'</button></td>';
                 }
@@ -181,6 +186,112 @@ const deleteCar = (id) => {
         else{
             alert("Nie można usuwać pojazdów, które są egzemplarze zostały utworzone. Sprobuj deaktywować pojazd.");
         }
+    });
+}
+
+const showCarsFullInfoList = () => {
+    let container = document.getElementById("content");
+    let cars = [];
+    getData("/cars/getFullInfo").then(data => {
+        for(let i=0;i<data.length;i++){
+            cars.push(data[i]);
+        }
+        let str = '';
+        if (cars.length!=0){
+            str += '<table class="infoTable">';
+            str += '<tr><td>Model</td><td>Rodzaj nadwozia</td><td>Wersja wyposażenia</td><td>Silnik</td><td>Rok modelowy</td><td>Cena bazowa</td></tr>';
+            for(let i=0; i<cars.length; i++){
+                str += '<tr class="visibleRow" onclick="toggleRow('+cars[i].id_car+');">';
+                str += '<td>' + cars[i].model.name + '</td>';
+                str += '<td>' + cars[i].model.chassis + '</td>';
+                str += '<td>' + cars[i].version + '</td>';
+                str += '<td>' + cars[i].engine.name + '</td>';
+                str += '<td>' + cars[i].year + '</td>';
+                str += '<td>' + cars[i].value + '</td>';
+                str += '</tr>'
+                str += '<tr class="hiddenRow" id="'+cars[i].id_car+'" style="display: none;">';
+                str += '<td colspan="6"><table>';
+                str += '<tr>';
+                str += '<td>Opis:</td>'
+                str += '<td>' + cars[i].model.description + '</td>';
+                str += '</tr>';
+                str += '<tr>';
+                str += '<td>Wymiary (dł x szer x wys) [mm]:</td>'
+                str += '<td>' + cars[i].model.length + 'x' + cars[i].model.width + 'x' + cars[i].model.height + '</td>';
+                str += '</tr>';
+                str += '<tr>';
+                str += '<td>Pojemność bagażnika [l]:</td>'
+                str += '<td>' + cars[i].model.boot_size + '</td>';
+                str += '</tr>';
+                str += '<tr>';
+                str += '<td>Moc:</td>'
+                str += '<td>' + cars[i].engine.power + '</td>';
+                str += '</tr>';
+                str += '<tr>';
+                str += '<td>Pojemność skokowa:</td>'
+                str += '<td>' + cars[i].engine.displacement + '</td>';
+                str += '</tr>';
+                str += '<tr>';
+                str += '<td>Rodzaj paliwa:</td>'
+                str += '<td>' + cars[i].engine.fuel + '</td>';
+                str += '</tr>';
+                str += '<tr>';
+                str += '<td>Liczba cylindrów:</td>'
+                str += '<td>' + cars[i].engine.cylinders + '</td>';
+                str += '</tr>';
+                str += '</table></td>';
+                str += '</tr>';
+            }
+            str += '</table>';
+        }
+        container.innerHTML = str;
+    });
+}
+
+const toggleRow = (id) => {
+
+    if (document.getElementById(id).style.display==='none') {
+        document.getElementById(id).style.display = 'table-row';
+    }
+    else {
+        document.getElementById(id).style.display='none';
+    }
+}
+
+const showVersionsPage = () => {
+    let container = document.getElementById("content");
+    let versions = [];
+    getData("/equipment/getActiveVersions").then(data => {
+        for(let i=0;i<data.length;i++){
+            versions.push(data[i]);
+        }
+        let str = '';
+        if (versions.length!=0){
+            str += '<table class="infoTable">';
+            str += '<tr><td>Nazwa wersji</td><td>Cena</td></tr>';
+            for(let i=0; i<versions.length; i++){
+                str += '<tr class="visibleRow" onclick="toggleRow('+versions[i].id_version+');">';
+                str += '<td>' + versions[i].name + '</td>';
+                str += '<td>' + versions[i].value + '</td>';
+                str += '</tr>';
+                str += '<tr class="hiddenRow" id="' + versions[i].id_version + '" style="display: none;">';
+                str += '<td colspan="2"><table>';
+                str += '<tr>';
+                str += '<td>Nazwa:</td>';
+                str += '<td>Opis:</td>'
+                str += '</tr>'
+                for(let j=0; j<versions[i].equipmentList.length; j++) {
+                    str += '<tr>';
+                    str += '<td>' + versions[i].equipmentList[j].name + '</td>';
+                    str += '<td>' + versions[i].equipmentList[j].description + '</td>';
+                    str += '</tr>';
+                }
+                str += '</table></td>';
+                str += '</tr>';
+            }
+            str += '</table>';
+        }
+        container.innerHTML = str;
     });
 }
 

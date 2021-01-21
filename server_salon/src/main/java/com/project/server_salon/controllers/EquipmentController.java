@@ -107,7 +107,7 @@ public class EquipmentController {
                                              rs.getInt("aktywna"));
                     try{
                         PreparedStatement stmt2 = c.prepareStatement("SELECT * FROM salon.wyposazenie_widok where id_wyposazenia in (select w.id_wyposazenia from salon.wyposazenie_w_wersji w where w.id_wersje_wyposazenia=?)", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
-                        stmt2.setInt(1, ver.getId_wersje_wyposazenia());
+                        stmt2.setInt(1, ver.getId_version());
                         ResultSet rs2 = stmt2.executeQuery();
                         ArrayList<Equipment> eqArr = new ArrayList<>();
                         while (rs2.next()){
@@ -151,7 +151,7 @@ public class EquipmentController {
                             rs.getInt("aktywna"));
                     try{
                         PreparedStatement stmt2 = c.prepareStatement("SELECT * FROM salon.wyposazenie_widok where id_wyposazenia in (select w.id_wyposazenia from salon.wyposazenie_w_wersji w where w.id_wersje_wyposazenia=?)", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
-                        stmt2.setInt(1, ver.getId_wersje_wyposazenia());
+                        stmt2.setInt(1, ver.getId_version());
                         ResultSet rs2 = stmt2.executeQuery();
                         ArrayList<Equipment> eqArr = new ArrayList<>();
                         while (rs2.next()){
@@ -172,7 +172,6 @@ public class EquipmentController {
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
-                System.exit(1);
             }
         }
         return versions;
@@ -205,7 +204,7 @@ public class EquipmentController {
                             rs.getInt("aktywna"));
                     try{
                         PreparedStatement stmt2 = c.prepareStatement("SELECT * FROM salon.wyposazenie_widok where id_wyposazenia in (select w.id_wyposazenia from salon.wyposazenie_w_wersji w where w.id_wersje_wyposazenia=?)", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
-                        stmt2.setInt(1, version.getId_wersje_wyposazenia());
+                        stmt2.setInt(1, version.getId_version());
                         ResultSet rs2 = stmt2.executeQuery();
                         ArrayList<Equipment> eqArr = new ArrayList<>();
                         while (rs2.next()){

@@ -3,34 +3,34 @@ package com.project.server_salon.objects;
 import java.util.ArrayList;
 
 public class Version {
-    int id_wersje_wyposazenia;
-    String nazwa;
-    double cena;
-    int aktywna;
+    int id_version;
+    String name;
+    double value;
+    int active;
     ArrayList<Equipment> equipmentList;
 
-    public Version(int id_wersje_wyposazenia, String nazwa, double cena, int aktywna){
-        this.id_wersje_wyposazenia = id_wersje_wyposazenia;
-        this.nazwa = nazwa;
-        this.cena = cena;
-        this.aktywna = aktywna;
+    public Version(int id_version, String name, double value, int active){
+        this.id_version = id_version;
+        this.name = name;
+        this.value = value;
+        this.active = active;
     }
 
-    public int getId_wersje_wyposazenia() { return id_wersje_wyposazenia; }
+    public int getId_version() { return id_version; }
 
-    public void setId_wersje_wyposazenia(int id_wersje_wyposazenia) { this.id_wersje_wyposazenia = id_wersje_wyposazenia; }
+    public void setId_version(int id_version) { this.id_version = id_version; }
 
-    public String getNazwa() { return nazwa; }
+    public String getName() { return name; }
 
-    public void setNazwa(String nazwa) { this.nazwa = nazwa; }
+    public void setName(String name) { this.name = name; }
 
-    public double getCena() { return cena; }
+    public double getValue() { return value; }
 
-    public void setCena(double cena) { this.cena = cena; }
+    public void setValue(double value) { this.value = value; }
 
-    public int getAktywna() { return aktywna; }
+    public int getActive() { return active; }
 
-    public void setAktywna(int aktywna) { this.aktywna = aktywna; }
+    public void setActive(int active) { this.active = active; }
 
     public ArrayList<Equipment> getEquipmentList() { return equipmentList; }
 

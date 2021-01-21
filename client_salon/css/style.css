@@ -26,13 +26,11 @@ header h1 {
     text-align: center;
     margin: 0px;
     padding: 0px;
-
 }
 
 nav {
     width: 100%;
     text-align: center;
-    overflow: hidden;
 }
 
 ol {
@@ -40,8 +38,8 @@ ol {
     padding:0;
     margin:0;
     background-color:#202020;
-   /* height:4em;
-    line-height:2em;*/
+    height:4em;
+    line-height:2em;
     text-align:center;
 }
 
@@ -51,16 +49,21 @@ ol a {
     text-align: center;
     padding: 15px 20px;
     text-decoration: none;
-    font-size: 20pt;
+    font-size: 16pt;
     font-weight: bolder;
 }
 
 ol > li {
     float:left;
     margin-left:1px;
-    width:16.6%;
+    width:14.23%;
     background-color:black;
-    /*height:4em;*/
+    height:4em;
+}
+
+ol > .customerMenu {
+    width:19.9%;
+    margin-left: 1px;
 }
 
 ol > li:first-child {
@@ -96,6 +99,7 @@ ol > li > ul > li {
 /* wygląd elementu - a - w części rozwijanej */
 ol > li > ul > li > a {
     border-top:1px solid #FFF;
+    color: black;
 }
 
 /* wygląd elementu - li - w części rozwijanej, po najechaniu kursorem myszki na dany element - li */
@@ -112,7 +116,7 @@ ol > li > ul > li:hover > a {
 
 main {
     width: 100%;
-    background-color:  #5c5b5b;
+    background-color:  #C9C9C9;
     height: 100%;
     box-sizing: border-box;
     min-height: 600px;
@@ -120,40 +124,95 @@ main {
     margin: 0;
 }
 
-#prepareSection {
+h3 {
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
+
+#content {
+    text-align: center;
     width:100%;
+    padding-top: 50px;
 }
 
-#prepareSection > * {
+.loginButtons{
+    margin: 15px;
+    width:300px;
+    height: 50px;
+    background-color: black;
+    border: none;
     color: white;
+    font-family: Courier;
+    font-weight: bold;
+    font-size: larger;
 }
 
-#description {
-    overflow: hidden;
-    text-align: center;
+.loginButtons:hover{
+    background-color: #d6aa62;
 }
 
-#description > p {
-    width:90%;
-    margin: auto;
-    margin-top: 10px;
+#registerTable{
+    border-collapse: collapse;
+
 }
 
-#description p{
-    overflow: hidden;
+#registerTable tr td:first-child{
+    text-align: left;
 }
 
-#params {
-    display: flex;
+#registerTable tr:nth-child(odd){
+    background-color: #DDDDDD;
 }
 
-#setParams {
-    width: 50%;
-    float: left;
-    overflow: hidden;
-    text-align: center;
+#registerTable tr:nth-child(odd) td:last-child > *{
+    background-color: #DDDDDD;
+    border: #5E5E5E 1px solid;
 }
 
-#showParams {
-    width: 50%;
+#registerTable tr:nth-child(even){
+    background-color: #707070;
 }
+
+#registerTable tr:nth-child(even) td:last-child > *{
+    background-color: #707070;
+    border: #5E5E5E 1px solid;
+}
+
+.infoTable{
+    margin:auto;
+    width:60%;
+    border-collapse: collapse;
+}
+
+.infoTable > tbody > tr:first-child{
+    background-color: #3F3F3F;
+    color: white
+}
+
+.infoTable > tbody > tr > td{
+    border-left: white 1px solid;
+}
+
+.infoTable > tbody > tr > td:first-child{
+    border-left: none;
+}
+.infoTable .hiddenRow table > tbody tr td:first-child {
+    text-align: left;
+}
+
+.infoTable .hiddenRow table{
+    border-collapse: collapse;
+}
+
+
+.infoTable .hiddenRow table > tbody tr td{
+    background-color: #BABABA;
+    border-bottom: #ACACAC 1px solid;
+
+}
+
+.infoTable .visibleRow:hover{
+    background-color: #3F3F3F;
+    color: white
+}
+

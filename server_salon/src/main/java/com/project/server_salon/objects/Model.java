@@ -1,33 +1,83 @@
 package com.project.server_salon.objects;
 
 public class Model {
-    private int id_modelu;
-    private String nazwa;
-    private String typ_nadwozia;
-    private double cena_bazowa;
+    private int id_model;
+    private String name;
+    private String chassis;
+    String description;
+    int length;
+    int width;
+    int height;
+    int boot_size;
+    private double value;
 
-    public Model(int id_modelu, String nazwa, String typ_nadwozia, double cena_bazowa){
-        this.id_modelu = id_modelu;
-        this.nazwa = nazwa;
-        this.typ_nadwozia = typ_nadwozia;
-        this.cena_bazowa = cena_bazowa;
+    public Model(int id_model, String name, String chassis, String description, int length, int width, int height, int boot_size, double value){
+        this.id_model = id_model;
+        this.name = name;
+        this.chassis = chassis;
+        this.description = description;
+        this.length = length;
+        this.width = width;
+        this.height = height;
+        this.boot_size = boot_size;
+        this.value = value;
     }
 
-    public int getId_modelu(){ return id_modelu; }
+    public int getId_model(){ return id_model; }
 
-    public void setId_modelu(int id_modelu){ this.id_modelu=id_modelu; }
+    public void setId_model(int id_model){ this.id_model = id_model; }
 
-    public String getNazwa(){ return nazwa; }
+    public String getName(){ return name; }
 
-    public void setNazwa(String nazwa){ this.nazwa=nazwa; }
+    public void setName(String name){ this.name = name; }
 
-    public String getTyp_nadwozia(){ return typ_nadwozia; }
+    public String getChassis(){ return chassis; }
 
-    public void setTyp_nadwozia(String typ_nadwozia){ this.typ_nadwozia=typ_nadwozia; }
+    public void setChassis(String chassis){ this.chassis = chassis; }
 
-    public double getCena_bazowa(){ return cena_bazowa; }
+    public String getDescription() {
+        return description;
+    }
 
-    public void setCena_bazowa(double cena_bazowa){ this.cena_bazowa=cena_bazowa; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getBoot_size() {
+        return boot_size;
+    }
+
+    public void setBoot_size(int boot_size) {
+        this.boot_size = boot_size;
+    }
+
+    public double getValue(){ return value; }
+
+    public void setValue(double value){ this.value = value; }
 
 
 }

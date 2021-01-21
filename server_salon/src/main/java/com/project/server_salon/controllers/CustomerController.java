@@ -65,17 +65,10 @@ public class CustomerController {
         return customers;
     }
 
-    @PostMapping("/getInfo")
-    public Customer getInfo(@RequestBody Map<String, String> request){
-        int id_customer;
+    @GetMapping("/getInfo")
+    @ResponseBody
+    public Customer getInfo(@RequestParam int id_customer){
         Customer customer = null;
-        try{
-            id_customer = Integer.parseInt(request.get("id_customer"));
-        }
-        catch(Exception e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form");
-        }
-
         if(!getConn()){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
         }
@@ -102,15 +95,12 @@ public class CustomerController {
                 else {
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "User does not exist");
                 }
-
             }
             catch (SQLException e){
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
             }
         }
-
         return customer;
-
     }
 
     @PostMapping("/add")
@@ -230,7 +220,6 @@ public class CustomerController {
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong request form");
         }
-
         try{
             if(!getConn()){
                 throw new Exception();

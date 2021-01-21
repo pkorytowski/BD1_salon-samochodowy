@@ -1,37 +1,37 @@
 package com.project.server_salon.objects;
 
 public class Equipment {
-    int id_wyposazenia;
-    int typ_wyposazenia;
-    String nazwa;
-    String opis;
-    double cena;
+    int id_equipment;
+    int type;
+    String name;
+    String description;
+    double value;
 
-    public Equipment(int id_wyposazenia, int typ_wyposazenia, String nazwa, String opis, double cena){
-        this.id_wyposazenia = id_wyposazenia;
-        this.typ_wyposazenia = typ_wyposazenia;
-        this.nazwa = nazwa;
-        this.opis = opis;
-        this.cena = cena;
+    public Equipment(int id_equipment, int type, String name, String description, double value){
+        this.id_equipment = id_equipment;
+        this.type = type;
+        this.name = name;
+        this.description = description;
+        this.value = value;
     }
 
-    public int getId_wyposazenia() { return id_wyposazenia; }
+    public int getId_equipment() { return id_equipment; }
 
-    public void setId_wyposazenia(int id_wyposazenia) { this.id_wyposazenia = id_wyposazenia; }
+    public void setId_equipment(int id_equipment) { this.id_equipment = id_equipment; }
 
-    public int getTyp_wyposazenia() { return typ_wyposazenia; }
+    public int getType() { return type; }
 
-    public void setTyp_wyposazenia(int typ_wyposazenia) {this.typ_wyposazenia = typ_wyposazenia; }
+    public void setType(int type) {this.type = type; }
 
-    public String getNazwa() { return nazwa; }
+    public String getName() { return name; }
 
-    public void setNazwa(String nazwa) { this.nazwa = nazwa; }
+    public void setName(String name) { this.name = name; }
 
-    public String getOpis() { return opis; }
+    public String getDescription() { return description; }
 
-    public void setOpis(String opis) { this.opis = opis; }
+    public void setDescription(String description) { this.description = description; }
 
-    public double getCena() { return cena; }
+    public double getValue() { return value; }
 
-    public void setCena(double cena) { this.cena = cena; }
+    public void setValue(double value) { this.value = value; }
 }

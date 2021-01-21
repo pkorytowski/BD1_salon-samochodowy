@@ -1,11 +1,13 @@
 const displayContent = () => {
     let container = document.getElementById("content");
+    let navbar = document.getElementById("menu");
+    navbar.innerHTML = '';
     let role = sessionStorage.getItem("role");
-    if(role==null){
+    if(role===null){
         container.innerHTML = `
-        <button onClick="loginPanel()">Zaloguj się</button>
+        <button class="loginButtons" onclick="loginPanel();">Zaloguj</button>
         <br/>
-        <button onClick="registerPanel()">Zarejestruj się</button>
+        <button class="loginButtons" onclick="registerPanel();">Zarejestruj</button>
         <br/>
         `;
     }
@@ -18,49 +20,51 @@ const displayContent = () => {
     else if (role==='ROLE_CLIENT'){
         displayCustomerMenu();
     }
-    else{
-        container.innerHTML = `
-        <ul>
-        <li><a id="showCars">dupa</a></li>
-        </ul>
-        `;
 
-    }
 }
 
 const displayCustomerMenu = () => {
     let menu = document.getElementById("menu");
     menu.innerHTML = `
     <ol>
-        <li><a href="#" id="showCars">Samochody</a>
+        <li class="customerMenu"><a href="#" id="showCars">Samochody</a>
         <ul>
-            <li><a href="#" id="showAvailableCars">Poznaj samochody</a></li>
-            <li><a href="#" id="IMPLEMENT ME">Poznaj wersje wyposażenia</a></li>
-            <li><a href="#" id="addUnit">Skonfiguruj własne auto</a></li>
-            <li><a href="#" id="showUnits">Zobacz skonfigurowane samochody</a></li>
+            <li class="customerMenu"><a href="#" id="showAvailableCars">Poznaj samochody</a></li>
+            <li class="customerMenu"><a href="#" id="showVersions">Poznaj wersje wyposażenia</a></li>
+            <li class="customerMenu"><a href="#" id="addUnit">Skonfiguruj własne auto</a></li>
+            <li class="customerMenu"><a href="#" id="showUnits">Zobacz skonfigurowane samochody</a></li>
         </ul>
         </li>
-        <li><a href="#" id="showOrders">Zamowienia</a>
+        <li class="customerMenu"><a href="#" id="showOrders">Zamowienia</a>
         <ul>
-            <li><a href="#" id="showCurrentOrders">Pokaż aktualne zamówienia</a></li>
+            <li class="customerMenu"><a href="#" id="showCurrentOrders">Pokaż aktualne zamówienia</a></li>
         </ul>
         </li>
-        <li><a href="#" id="showRelease">Pokój wydań</a>
+        <li class="customerMenu"><a href="#" id="showRelease">Pokój wydań</a>
         <ul>
-            <li><a href="#" id="showReleaseRoom">Zobacz datę wydania pojazdów</a></li>
+            <li class="customerMenu"><a href="#" id="showReleaseRoom">Zobacz datę wydania pojazdów</a></li>
         </ul>
         </li>
-        <li><a href="#" id="showTest">Jazda próbna</a>
+        <li class="customerMenu"><a href="#" id="showTest">Jazda próbna</a>
         <ul>
-            <li><a href="#" id="showTestDrive">Pokaż umówione jazdy próbne</a></li>
-            <li><a href="#" id="showAddTestDrive">Umów się jazdę próbną</a></li>
+            <li class="customerMenu"><a href="#" id="showTestDrive">Pokaż umówione jazdy próbne</a></li>
+            <li class="customerMenu"><a href="#" id="showAddTestDrive">Umów się jazdę próbną</a></li>
+        </ul>
+        </li>
+        <li class="customerMenu"><a href="#" id="showUserMenu">Profil</a>
+        <ul>
+            <li class="customerMenu"><a href="#" id="showUpdateProfile">Zmodyfikuj swoje dane</a></li>
+            <li class="customerMenu"><a href="#" id="logout">Wyloguj się</a></li>
         </ul>
         </li>
     </ol>
     `;
 
     let showAvailableCars = document.getElementById("showAvailableCars");
-    showAvailableCars.addEventListener("click", showAvailableCarsList);
+    showAvailableCars.addEventListener("click", showCarsFullInfoList);
+
+    let showVersions = document.getElementById("showVersions");
+    showVersions.addEventListener("click", showVersionsPage);
 
     let showUnits = document.getElementById("showUnits");
     showUnits.addEventListener("click", showCustomerUnitsList);
@@ -80,6 +84,11 @@ const displayCustomerMenu = () => {
     let showAddTestDrive = document.getElementById("showAddTestDrive");
     showAddTestDrive.addEventListener("click", showCustomerAddTestDrivePage);
 
+    let updateProfile = document.getElementById("showUpdateProfile");
+    updateProfile.addEventListener("click", showUpdateCustomerProfile);
+
+    let logout = document.getElementById("logout");
+    logout.addEventListener("click", performLogout);
 
     let container = document.getElementById("content");
     container.innerHTML = `
@@ -122,6 +131,7 @@ const displaySellerMenu = () => {
             <li><a href="#" id="showAddTestDrive">Dodaj jazdę próbną</a></li>
         </ul>
         </li>
+        <li><a href="#" id="logout">Wyloguj się</a></li>
     </ol>
     `;
 
@@ -155,6 +165,8 @@ const displaySellerMenu = () => {
     let showAddTestDrive = document.getElementById("showAddTestDrive");
     showAddTestDrive.addEventListener("click", showAddTestDrivePage);
 
+    let logout = document.getElementById("logout");
+    logout.addEventListener("click", performLogout);
 
     let container = document.getElementById("content");
     container.innerHTML = `
@@ -205,6 +217,7 @@ const displayManagerMenu = () => {
             <li><a href="#" id="showAddTestDrive">Dodaj jazdę próbną</a></li>
         </ul>
         </li>
+        <li><a href="#" id="logout">Wyloguj się</a></li>
     </ol>
     `;
 
@@ -250,6 +263,8 @@ const displayManagerMenu = () => {
     let showAddTestDrive = document.getElementById("showAddTestDrive");
     showAddTestDrive.addEventListener("click", showAddTestDrivePage);
 
+    let logout = document.getElementById("logout");
+    logout.addEventListener("click", performLogout);
 
     let container = document.getElementById("content");
     container.innerHTML = `
