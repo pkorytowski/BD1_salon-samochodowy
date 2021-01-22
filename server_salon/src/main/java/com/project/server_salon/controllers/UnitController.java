@@ -26,7 +26,7 @@ public class UnitController {
 
     public boolean getConn() {
         try{
-            c = DriverManager.getConnection(Objects.requireNonNull(env.getProperty("db.url")), env.getProperty("db.user"), env.getProperty("db.password"));
+            c = DataSource.getConnection();
         }
         catch (SQLException e){
             return false;
@@ -69,6 +69,7 @@ public class UnitController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -114,6 +115,7 @@ public class UnitController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -157,6 +159,7 @@ public class UnitController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -200,6 +203,7 @@ public class UnitController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -243,6 +247,7 @@ public class UnitController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -283,6 +288,8 @@ public class UnitController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Unit already exists");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
@@ -339,6 +346,8 @@ public class UnitController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Unit does not exists");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");

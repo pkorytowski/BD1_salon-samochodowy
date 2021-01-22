@@ -25,7 +25,7 @@ public class OrderController {
 
     public boolean getConn() {
         try{
-            c = DriverManager.getConnection(Objects.requireNonNull(env.getProperty("db.url")), env.getProperty("db.user"), env.getProperty("db.password"));
+            c = DataSource.getConnection();
         }
         catch (SQLException e){
             return false;
@@ -76,6 +76,7 @@ public class OrderController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -129,6 +130,7 @@ public class OrderController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -180,6 +182,7 @@ public class OrderController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -230,6 +233,7 @@ public class OrderController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -283,6 +287,7 @@ public class OrderController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -342,6 +347,7 @@ public class OrderController {
                             rs.getDouble("cena_koncowa"));
                     rs.close();
                     stmt.close();
+                    c.close();
                 }
                 else{
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "Order does not exists.");
@@ -384,6 +390,8 @@ public class OrderController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Order already exists");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
@@ -413,6 +421,8 @@ public class OrderController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Problem with updating order");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
@@ -442,6 +452,8 @@ public class OrderController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Problem with updating order");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
@@ -468,6 +480,8 @@ public class OrderController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Problem with deleting order");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");

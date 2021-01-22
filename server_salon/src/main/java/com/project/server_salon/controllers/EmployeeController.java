@@ -23,7 +23,7 @@ public class EmployeeController {
 
     public boolean getConn() {
         try{
-            c = DriverManager.getConnection(Objects.requireNonNull(env.getProperty("db.url")), env.getProperty("db.user"), env.getProperty("db.password"));
+            c = DataSource.getConnection();
         }
         catch (SQLException e){
             return false;
@@ -52,6 +52,7 @@ public class EmployeeController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -80,6 +81,7 @@ public class EmployeeController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -116,6 +118,8 @@ public class EmployeeController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
@@ -152,6 +156,8 @@ public class EmployeeController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Problem with updating");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
@@ -179,6 +185,8 @@ public class EmployeeController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "User does not exist");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");

@@ -49,7 +49,7 @@ public class LoginController {
 
         Connection c = null;
         try{
-            c = DriverManager.getConnection(Objects.requireNonNull(env.getProperty("db.url")), env.getProperty("db.user"), env.getProperty("db.password"));
+            c = DataSource.getConnection();
         }
         catch (SQLException e){
             return null;
@@ -86,6 +86,7 @@ public class LoginController {
                         user.setUser(id);
                         user.setToken(token);
                         user.setRole(role);
+                        c.close();
                         return user;
                     }
                     else{
@@ -95,6 +96,9 @@ public class LoginController {
                 else{
                     System.out.println("nie ma wiersza");
                 }
+                rs.close();
+                stmt.close();
+                c.close();
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");

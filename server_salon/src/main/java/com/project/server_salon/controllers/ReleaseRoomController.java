@@ -27,7 +27,7 @@ public class ReleaseRoomController {
 
     public boolean getConn() {
         try{
-            c = DriverManager.getConnection(Objects.requireNonNull(env.getProperty("db.url")), env.getProperty("db.user"), env.getProperty("db.password"));
+            c = DataSource.getConnection();
         }
         catch (SQLException e){
             return false;
@@ -55,6 +55,38 @@ public class ReleaseRoomController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
+            }
+            catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return releases;
+    }
+
+    @GetMapping("/getCustomerAll")
+    @ResponseBody
+    public ArrayList<Release> getCustomerAll(@RequestParam int id_customer){
+        ArrayList<Release> releases = new ArrayList<>();
+        if(!getConn()){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
+        }
+        if (c!=null){
+            try{
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.pokoj_wydan_widok where id_klienta=?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                stmt.setInt(1, id_customer);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next())  {
+                    releases.add(new Release(rs.getInt("id_pokoj_wydan"),
+                            rs.getInt("id_pracownika"),
+                            rs.getString("imie"),
+                            rs.getString("nazwisko"),
+                            rs.getInt("id_zamowienia"),
+                            rs.getTimestamp("data")));
+                }
+                rs.close();
+                stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -85,6 +117,40 @@ public class ReleaseRoomController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
+            }
+            catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return releases;
+    }
+
+    @GetMapping("/getCustomerAllFromToday")
+    @ResponseBody
+    public ArrayList<Release> getCustomerAllFromToday(@RequestParam int id_customer){
+        ArrayList<Release> releases = new ArrayList<>();
+        if(!getConn()){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
+        }
+        if (c!=null){
+            try{
+                LocalDate date = LocalDate.now();
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.pokoj_wydan_widok where id_klienta=? and data>=?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                stmt.setInt(1, id_customer);
+                stmt.setObject(2, date);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next())  {
+                    releases.add(new Release(rs.getInt("id_pokoj_wydan"),
+                            rs.getInt("id_pracownika"),
+                            rs.getString("imie"),
+                            rs.getString("nazwisko"),
+                            rs.getInt("id_zamowienia"),
+                            rs.getTimestamp("data")));
+                }
+                rs.close();
+                stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -124,6 +190,7 @@ public class ReleaseRoomController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -160,6 +227,7 @@ public class ReleaseRoomController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -202,6 +270,7 @@ public class ReleaseRoomController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -237,6 +306,8 @@ public class ReleaseRoomController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "A conflict occured");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -260,9 +331,11 @@ public class ReleaseRoomController {
             PreparedStatement stmt = c.prepareStatement("DELETE FROM salon.pokoj_wydan where id_pokoj_wydan=?");
             stmt.setInt(1, id_release);
             int i=stmt.executeUpdate();
-            if(i!=1){
+            if(i!=1) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "A conflict occured");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

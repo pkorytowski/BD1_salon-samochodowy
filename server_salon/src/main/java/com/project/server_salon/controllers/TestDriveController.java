@@ -26,7 +26,7 @@ public class TestDriveController {
 
     public boolean getConn() {
         try{
-            c = DriverManager.getConnection(Objects.requireNonNull(env.getProperty("db.url")), env.getProperty("db.user"), env.getProperty("db.password"));
+            c = DataSource.getConnection();
         }
         catch (SQLException e){
             return false;
@@ -57,6 +57,7 @@ public class TestDriveController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -90,6 +91,7 @@ public class TestDriveController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -123,6 +125,7 @@ public class TestDriveController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -158,6 +161,7 @@ public class TestDriveController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -200,6 +204,7 @@ public class TestDriveController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -239,6 +244,7 @@ public class TestDriveController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -284,6 +290,7 @@ public class TestDriveController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -321,6 +328,8 @@ public class TestDriveController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "A conflict occured");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
@@ -347,6 +356,8 @@ public class TestDriveController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "A conflict occured");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");

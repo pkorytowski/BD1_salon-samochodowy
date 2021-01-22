@@ -23,7 +23,7 @@ public class ModelsController {
 
     public boolean getConn() {
         try{
-            c = DriverManager.getConnection(Objects.requireNonNull(env.getProperty("db.url")), env.getProperty("db.user"), env.getProperty("db.password"));
+            c = DataSource.getConnection();
         }
         catch (SQLException e){
             return false;
@@ -41,7 +41,7 @@ public class ModelsController {
 
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_modelu, nazwa, typ_nadwozia, cena_bazowa FROM salon.modele", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.modele", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     models.add(new Model(rs.getInt("id_modelu"),
@@ -55,12 +55,11 @@ public class ModelsController {
                             rs.getDouble("cena_bazowa")));
                 }
                 rs.close();
-
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
-                System.exit(1);
             }
         }
         return models;
@@ -91,6 +90,8 @@ public class ModelsController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Model already exists");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
@@ -118,6 +119,8 @@ public class ModelsController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Model does not exist");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
@@ -154,6 +157,8 @@ public class ModelsController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Model does not exist");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");

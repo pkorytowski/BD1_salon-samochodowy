@@ -26,7 +26,7 @@ public class EnginesController {
 
     public boolean getConn() {
         try{
-            c = DriverManager.getConnection(Objects.requireNonNull(env.getProperty("db.url")), env.getProperty("db.user"), env.getProperty("db.password"));
+            c = DataSource.getConnection();
         }
         catch (SQLException e){
             return false;
@@ -56,8 +56,8 @@ public class EnginesController {
                             rs.getDouble("cena")));
                 }
                 rs.close();
-
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -101,6 +101,8 @@ public class EnginesController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Engine already exists");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
@@ -128,6 +130,8 @@ public class EnginesController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Engine does not exist");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
@@ -172,6 +176,8 @@ public class EnginesController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Engine does not exist");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");

@@ -24,7 +24,7 @@ public class CarsController {
 
     public boolean getConn() {
         try{
-            c = DriverManager.getConnection(Objects.requireNonNull(env.getProperty("db.url")), env.getProperty("db.user"), env.getProperty("db.password"));
+            c = DataSource.getConnection();
         }
         catch (SQLException e){
             return false;
@@ -57,6 +57,7 @@ public class CarsController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -90,6 +91,7 @@ public class CarsController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -138,6 +140,7 @@ public class CarsController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -173,6 +176,8 @@ public class CarsController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Car already exists");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
@@ -202,6 +207,8 @@ public class CarsController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Problem with updating a car");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e.getCause());
@@ -227,10 +234,12 @@ public class CarsController {
             stmt.setInt(1, id_samochodu);
             int i = stmt.executeUpdate();
             System.out.println(i);
-                if(i!=1){
-                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Car does not exist");
-                }
+            if(i!=1){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Car does not exist");
             }
+            stmt.close();
+            c.close();
+        }
         catch (SQLException e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e.getCause());
         }
@@ -258,6 +267,7 @@ public class CarsController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());

@@ -24,7 +24,7 @@ public class CustomerController {
 
     public boolean getConn() {
         try{
-            c = DriverManager.getConnection(Objects.requireNonNull(env.getProperty("db.url")), env.getProperty("db.user"), env.getProperty("db.password"));
+            c = DataSource.getConnection();
         }
         catch (SQLException e){
             return false;
@@ -57,6 +57,7 @@ public class CustomerController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -91,6 +92,7 @@ public class CustomerController {
                             rs.getString("email"));
                     rs.close();
                     stmt.close();
+                    c.close();
                 }
                 else {
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "User does not exist");
@@ -148,9 +150,11 @@ public class CustomerController {
             stmt.setString(10, email);
             stmt.setString(11, password);
             int i=stmt.executeUpdate();
-            if(i!=1){
+            if(i!=1) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
@@ -205,6 +209,8 @@ public class CustomerController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "User does not exists");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -230,6 +236,8 @@ public class CustomerController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "User does not exist");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");

@@ -25,7 +25,7 @@ public class EquipmentController {
 
     public boolean getConn() {
         try{
-            c = DriverManager.getConnection(Objects.requireNonNull(env.getProperty("db.url")), env.getProperty("db.user"), env.getProperty("db.password"));
+            c = DataSource.getConnection();
         }
         catch (SQLException e){
             return false;
@@ -52,12 +52,11 @@ public class EquipmentController {
                             rs.getDouble("cena")));
                 }
                 rs.close();
-
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
-                System.exit(1);
             }
         }
         return equipments;
@@ -78,12 +77,11 @@ public class EquipmentController {
                     types.add(rs.getString("typ"));
                 }
                 rs.close();
-
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
-                System.exit(1);
             }
         }
         return types;
@@ -120,11 +118,11 @@ public class EquipmentController {
                     }
                     catch (SQLException e){
                         System.out.println(e.getMessage() + ", " + e.getCause());
-                        System.exit(1);
                     }
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -164,11 +162,11 @@ public class EquipmentController {
                     }
                     catch (SQLException e){
                         System.out.println(e.getMessage() + ", " + e.getCause());
-                        System.exit(1);
                     }
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -220,6 +218,7 @@ public class EquipmentController {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
             }
             catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -285,7 +284,7 @@ public class EquipmentController {
                 else{
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "Version already exists");
                 }
-
+                c.close();
             }
             catch (Exception e){
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e.getCause());
@@ -316,6 +315,8 @@ public class EquipmentController {
             if(i!=1){
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Problem with updating equipment");
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e.getCause());
@@ -351,6 +352,8 @@ public class EquipmentController {
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "Version does not exists");
                 }
             }
+            stmt.close();
+            c.close();
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e.getCause());
