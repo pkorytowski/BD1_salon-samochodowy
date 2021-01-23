@@ -1,8 +1,6 @@
 package com.project.server_salon.controllers;
 
 import com.project.server_salon.objects.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -10,16 +8,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
 
 @RequestMapping(path="/orders")
 @RestController
 public class OrderController {
 
     Connection c = null;
-
-    @Autowired
-    private Environment env;
 
     OrderController(){}
 
@@ -296,16 +290,10 @@ public class OrderController {
         return orders;
     }
 
-    @PostMapping("/getOrder")
-    public Order getOrder(@RequestBody Map<String, String> request){
-        int id_order;
+    @GetMapping("/getOrder")
+    @ResponseBody
+    public Order getOrder(@RequestParam int id_order){
         Order order = null;
-        try{
-            id_order = Integer.parseInt(request.get("id_order"));
-        }
-        catch(Exception e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form");
-        }
 
         if(!getConn()){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");

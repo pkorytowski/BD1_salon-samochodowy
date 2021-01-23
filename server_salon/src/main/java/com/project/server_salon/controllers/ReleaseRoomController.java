@@ -1,8 +1,6 @@
 package com.project.server_salon.controllers;
 
 import com.project.server_salon.objects.Release;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,16 +10,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
+
 
 @RequestMapping(path="/release-room")
 @RestController
 public class ReleaseRoomController {
 
     Connection c = null;
-
-    @Autowired
-    private Environment env;
 
     public ReleaseRoomController(){}
 
@@ -139,126 +134,6 @@ public class ReleaseRoomController {
                 PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.pokoj_wydan_widok where id_klienta=? and data>=?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 stmt.setInt(1, id_customer);
                 stmt.setObject(2, date);
-                ResultSet rs = stmt.executeQuery();
-                while (rs.next())  {
-                    releases.add(new Release(rs.getInt("id_pokoj_wydan"),
-                            rs.getInt("id_pracownika"),
-                            rs.getString("imie"),
-                            rs.getString("nazwisko"),
-                            rs.getInt("id_zamowienia"),
-                            rs.getTimestamp("data")));
-                }
-                rs.close();
-                stmt.close();
-                c.close();
-            }
-            catch (SQLException e){
-                System.out.println(e.getMessage());
-            }
-        }
-        return releases;
-    }
-
-    @PostMapping("/getWithParam")
-    public ArrayList<Release> getWithParam(@RequestBody Map<String, String> request){
-        ArrayList<Release> releases = new ArrayList<>();
-        int value;
-        String key;
-        try{
-            value = Integer.parseInt(request.get("value"));
-            key = request.get("key");
-        }
-        catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form.");
-        }
-        if(!getConn()){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
-        }
-        if (c!=null){
-            try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_pokoj_wydan, id_pracownika, id_zamowienia, data FROM salon.pokoj_wydan where ? = ?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
-                stmt.setString(1, key);
-                stmt.setInt(2, value);
-                ResultSet rs = stmt.executeQuery();
-                while (rs.next())  {
-                    releases.add(new Release(rs.getInt("id_pokoj_wydan"),
-                            rs.getInt("id_pracownika"),
-                            rs.getString("imie"),
-                            rs.getString("nazwisko"),
-                            rs.getInt("id_zamowienia"),
-                            rs.getTimestamp("data")));
-                }
-                rs.close();
-                stmt.close();
-                c.close();
-            }
-            catch (SQLException e){
-                System.out.println(e.getMessage());
-            }
-        }
-        return releases;
-    }
-
-    @PostMapping("/getByDate")
-    public ArrayList<Release> getByDate(@RequestBody Map<String, String> request){
-        ArrayList<Release> releases = new ArrayList<>();
-        Timestamp ts;
-        try{
-            ts = Timestamp.valueOf(request.get("date"));
-        }
-        catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form.");
-        }
-        if(!getConn()){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
-        }
-        if (c!=null){
-            try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_pokoj_wydan, id_pracownika, id_zamowienia, data FROM salon.pokoj_wydan where data = ?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
-                stmt.setTimestamp(1, ts);
-                ResultSet rs = stmt.executeQuery();
-                while (rs.next())  {
-                    releases.add(new Release(rs.getInt("id_pokoj_wydan"),
-                            rs.getInt("id_pracownika"),
-                            rs.getString("imie"),
-                            rs.getString("nazwisko"),
-                            rs.getInt("id_zamowienia"),
-                            rs.getTimestamp("data")));
-                }
-                rs.close();
-                stmt.close();
-                c.close();
-            }
-            catch (SQLException e){
-                System.out.println(e.getMessage());
-            }
-        }
-        return releases;
-    }
-
-    @PostMapping("/getWithParamByDate")
-    public ArrayList<Release> getWithParamByDate(@RequestBody Map<String, String> request){
-        ArrayList<Release> releases = new ArrayList<>();
-        String key;
-        int value;
-        Timestamp ts;
-        try{
-            key = request.get("key");
-            value = Integer.parseInt(request.get("value"));
-            ts = Timestamp.valueOf(request.get("date"));
-        }
-        catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request form.");
-        }
-        if(!getConn()){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
-        }
-        if (c!=null){
-            try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_pokoj_wydan, id_pracownika, id_zamowienia, data FROM salon.pokoj_wydan where data = ? and ? = ?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
-                stmt.setTimestamp(1, ts);
-                stmt.setString(2, key);
-                stmt.setInt(3, value);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     releases.add(new Release(rs.getInt("id_pokoj_wydan"),

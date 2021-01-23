@@ -3,8 +3,6 @@ package com.project.server_salon.controllers;
 import com.project.server_salon.objects.Equipment;
 import com.project.server_salon.objects.EquipmentInVersion;
 import com.project.server_salon.objects.Version;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,9 +15,6 @@ import java.util.*;
 public class EquipmentController {
 
     Connection c = null;
-
-    @Autowired
-    private Environment env;
 
     public EquipmentController(){}
 
@@ -175,16 +170,10 @@ public class EquipmentController {
         return versions;
     }
 
-    @PostMapping(path = "/getVersion")
-    public Version getVersion(@RequestBody Map<String, String> request){
+    @GetMapping(path = "/getVersion")
+    @ResponseBody
+    public Version getVersion(@RequestParam int id_version){
         Version version = null;
-        int id;
-        try{
-            id = Integer.parseInt(request.get("id"));
-        }
-        catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad shape of request" + e.getMessage());
-        }
 
         if(!getConn()){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot connect to db.");
@@ -193,7 +182,7 @@ public class EquipmentController {
         if (c!=null) {
             try{
                 PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.wersje_wyposazenia where id_wersje_wyposazenia=?", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
-                stmt.setInt(1, id);
+                stmt.setInt(1, id_version);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     version = new Version(rs.getInt("id_wersje_wyposazenia"),

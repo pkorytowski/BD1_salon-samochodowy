@@ -3,8 +3,6 @@ package com.project.server_salon.controllers;
 import com.project.server_salon.objects.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -15,7 +13,6 @@ import java.sql.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -23,9 +20,6 @@ import java.util.stream.Collectors;
 @RequestMapping(path="/login")
 @RestController
 public class LoginController {
-
-    @Autowired
-    private Environment env;
 
     @PostMapping("/seller")
     public User loginSeller(@RequestBody Map<String, String> request) {

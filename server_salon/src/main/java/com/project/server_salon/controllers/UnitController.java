@@ -3,8 +3,6 @@ package com.project.server_salon.controllers;
 import com.project.server_salon.objects.Car;
 import com.project.server_salon.objects.CustomerShort;
 import com.project.server_salon.objects.Unit;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,15 +10,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
 
 @RequestMapping(path ="/units")
 @RestController
 public class UnitController {
     Connection c;
-
-    @Autowired
-    private Environment env;
 
     public UnitController(){}
 
@@ -352,8 +346,5 @@ public class UnitController {
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Problem with connection with db");
         }
-
     }
-
-
 }

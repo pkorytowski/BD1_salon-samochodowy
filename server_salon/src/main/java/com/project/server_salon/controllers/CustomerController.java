@@ -1,8 +1,6 @@
 package com.project.server_salon.controllers;
 
 import com.project.server_salon.objects.Customer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -10,15 +8,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
 
 @RequestMapping(path="/customers")
 @RestController
 public class CustomerController {
     Connection c = null;
-
-    @Autowired
-    private Environment env;
 
     public CustomerController(){}
 
