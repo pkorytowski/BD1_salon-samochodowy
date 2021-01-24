@@ -4,7 +4,6 @@ const showCurrentOrdersPage = async () => {
     let str = '';
     str += '<label for="checkActive">Pokaż wszystkie zamówienia</label><input type="checkbox" id="checkActive" name="checkActive">';
     str += ordersStr;
-    str += '<button id="deleteOrder">Usuń zamówienie</button>';
     container.innerHTML = str;
 
     let checkActive = document.querySelector("input[name=checkActive]");
@@ -13,9 +12,6 @@ const showCurrentOrdersPage = async () => {
             showOrdersPage();
         }
     });
-
-    let deleteBtn = document.getElementById("deleteOrder");
-    deleteBtn.addEventListener("click", showDeleteOrder);
 
 }
 
@@ -37,7 +33,7 @@ const showCustomerCurrentOrdersPage = async () => {
 
 const showCustomerOrdersPage = async () => {
     let container = document.getElementById("content");
-    let ordersStr = await getOrdersTable("/orders/getCustomerAll");
+    let ordersStr = await getCustomerOrdersTable("/orders/getCustomerAll");
     let str = '';
     str += '<label for="checkActive">Pokaż wszystkie zamówienia</label><input type="checkbox" id="checkActive" name="checkActive" checked>';
     str += ordersStr;
@@ -72,13 +68,27 @@ const showAddOrderPage = async () =>{
     let employees = await getEmployeesOptionList();
     let container = document.getElementById("content");
     container.innerHTML = `
-        <label for="units">Egzemplarz</label>
-        <select id="units" name="units">`+units+`</select>
-        <label for="employees">Pracownik</label>
-        <select id="employees" name="employees">`+employees+`</select>
-        <label for="discount">Rabat</label>
-        <input type="text" id="discount" name="discount" value="0"/>
-        <button id="addOrderBtn">Utwórz</button>
+        
+        <table id="registerTable">
+        <form>
+        <tr>
+        <td><label for="units">Egzemplarz</label></td>
+        <td><select class="form-control" id="units" name="units">`+units+`</select></td>
+        </tr>
+        <tr>
+        <td><label for="employees">Pracownik</label></td>
+        <td><select class="form-control" id="employees" name="employees">`+employees+`</select></td>
+        </tr>
+        <tr>
+        <td><label for="discount">Rabat</label></td>
+        <td><input class="form-control" type="text" id="discount" name="discount" value="0"/></td>
+        </tr>
+        <tr>
+        <td colspan="2" style="text-align: center;"><button id="addOrderBtn">Utwórz</button></td>
+        </tr>
+        </form>
+        </table>
+  
     `;
 
     let addOrderBtn = document.getElementById("addOrderBtn");
@@ -99,7 +109,6 @@ const addOrder = () => {
             "status": "utworzono",
             "discount": discount
         }
-        console.log(data)
         postData('/orders/add', data).then(response => {
             if(response.ok){
                 alert("Dodano zamówienie!");
@@ -112,15 +121,16 @@ const addOrder = () => {
     }
 }
 
-
 const getUnitsOptionList = async () => {
     let data = await getData('/units/getConfiguredUnits');
     let name = '';
     let surname = '';
     let str = '';
     for(let i=0; i<data.length; i++){
-        if(data[i].customer == null){
+        if(data[i].customer.firstName == null){
             name = '';
+        }
+        if(data[i].customer.surname == null){
             surname = '';
         }
         else{
@@ -141,19 +151,26 @@ const getEmployeesOptionList = async () => {
     return str;
 }
 
-const getCustomerOrdersTable = async (path, id) => {
+const getCustomerOrdersTable = async (path) => {
     let params = new URLSearchParams({
         id_customer:sessionStorage.getItem("user")
     })
     let orders = await getDataWithParams(path, params);
     let str = '';
     if (orders.length!==0){
-        str += '<table>';
+        str += '<table class="infoTable" style="width: 90%;">';
+        str += '<tr><td>Id. zamów.</td><td>Status</td><td>Pracownik odpowiedzialny</td><td>Model</td><td>Silnik</td><td>Wer.wyposażenia</td><td>Rok modelowy</td><td>Rabat</td><td>Cena</td></tr>'
         for(let i=0; i<orders.length; i++){
-            str += '<tr><td>' + orders[i].status + '</td>' + '<td>' + orders[i].employee.surname + '</td>' + '<td>';
-            str += orders[i].employee.name + '</td><td>' + orders[i].unit.car.model;
-            str += '</td><td>'+orders[i].unit.car.engine+'</td><td>'+orders[i].unit.car.version+ '</td>';
-            str += '<td>'+orders[i].unit.car.year+'</td><td>'+orders[i].discount+'</td><td>'+orders[i].value+'</td>';
+            str += '<tr>';
+            str += '<td>' + orders[i].id_order + '</td>';
+            str += '<td>' + orders[i].status + '</td>';
+            str += '<td>' + orders[i].employee.surname + ' ' + orders[i].employee.name +'</td>';
+            str += '<td>' + orders[i].unit.car.model + '</td>';
+            str += '<td>' + orders[i].unit.car.engine + '</td>';
+            str += '<td>' + orders[i].unit.car.version + '</td>';
+            str += '<td>' + orders[i].unit.car.year + '</td>';
+            str += '<td>' + orders[i].discount + '</td>';
+            str += '<td>' + orders[i].value + '</td>';
             str += '</tr>';
         }
         str += '</table>';
@@ -165,15 +182,27 @@ const getOrdersTable = async (path) => {
     let orders = await getData(path);
     let str = '';
     if (orders.length!==0){
-        str += '<table>';
+        str += '<table class="infoTable" style="width: 90%;">';
+        str += '<tr><td>Id. zamów.</td><td>Status zamówienia</td><td>Pracownik odpowiedzialny</td><td>Klient</td><td>Model</td><td>Silnik</td><td>Wer. wyposażenia</td><td>Rok modelowy</td><td>Rabat</td><td>Cena</td><td></td><td></td><td></td></tr>';
         for(let i=0; i<orders.length; i++){
-            str += '<tr><td>' + orders[i].status + '</td>' + '<td>' + orders[i].employee.surname + '</td>' + '<td>';
-            str += orders[i].unit.customer.surname + '</td>' + '<td>' + orders[i].unit.customer.firstName + '</td><td>' + orders[i].unit.car.model;
-            str += '</td><td>'+orders[i].unit.car.engine+'</td><td>'+orders[i].unit.car.version+ '</td>';
-            str += '<td>'+orders[i].unit.car.year+'</td><td>'+orders[i].discount+'</td><td>'+orders[i].value+'</td>';
+            str += '<tr>';
+            str += '<td>' + orders[i].id_order + '</td>';
+            str += '<td>' + orders[i].status + '</td>';
+            str += '<td>' + orders[i].employee.surname + ' ' + orders[i].employee.name + '</td>';
+            str += '<td>' + orders[i].unit.customer.surname  + ' ' + orders[i].unit.customer.firstName + '</td>';
+            str += '<td>' + orders[i].unit.car.model + '</td>';
+            str += '<td>' + orders[i].unit.car.engine +'</td>';
+            str += '<td>' + orders[i].unit.car.version + '</td>';
+            str += '<td>' + orders[i].unit.car.year + '</td>';
+            str += '<td>' + orders[i].discount + '</td>';
+            str += '<td>' + orders[i].value + '</td>';
             str += '<td><button onclick="showChangeOrderStatus('+orders[i].id_order+')">Zmień status</button></td>';
             if(orders[i].status==="utworzono"){
                 str += '<td><button onclick="showChangeDiscount('+orders[i].id_order+', '+orders[i].discount+')">Edytuj rabat</button></td>';
+                str += '<td><button onclick="deleteOrder('+orders[i].id_order+');">Usuń</button></td>'
+            }
+            else{
+                str += '<td></td><td></td>';
             }
             str += '</tr>';
         }
@@ -223,7 +252,7 @@ const showChangeOrderStatus = (id) => {
     let container = document.getElementById("content");
     container.innerHTML = `
         <select id="orderStatus">
-            <option value="skonfigurowano" selected>skonfigurowano</option>
+            <option value="utworzono" selected>utworzono</option>
             <option value="zamowienie zlozone">zamówienie złożone</option>
             <option value="wplacona zaliczka">wpłacona zaliczka</option>
             <option value="gotowe do odbioru">gotowe do odbioru</option>
@@ -254,35 +283,7 @@ const changeOrderStatus = (id, status) => {
     });
 }
 
-const showDeleteOrder = () => {
-    let container = document.getElementById("content");
-    let orders = [];
-    getData("/orders/getActiveOrders").then(data => {
-        for(let i=0;i<data.length;i++){
-            orders.push(data[i]);
-        }
-        let str = '';
-        if (orders.length!=0){
-            str += '<form id="deleteForm"><table>';
-            for(let i=0; i<orders.length; i++){
-                str += '<tr><td><input type="radio" name="order" value="'+orders[i].id_order+'"/></td><td>' + orders[i].status + '</td>' + '<td>' + orders[i].employee.surname + '</td>' + '<td>';
-                str += orders[i].unit.customer.surname + '</td>' + '<td>' + orders[i].unit.customer.firstName + '</td><td>' + orders[i].unit.car.model;
-                str += '</td><td>'+orders[i].unit.car.engine+'</td><td>'+orders[i].unit.car.version+'</td>';
-                str += '<td>'+orders[i].unit.car.year+'</td><td>'+orders[i].discount+'</td><td>'+orders[i].value+'</td></tr>';
-            }
-            str += '</table></form>';
-        }
-        str += '<button id="deleteOrder">Usuń</button></br>';
-        container.innerHTML = str;
-
-        let deleteBtn = document.getElementById("deleteOrder");
-        deleteBtn.addEventListener("click", deleteOrder);
-    });
-}
-
-const deleteOrder = () => {
-    let id = document.getElementById("deleteForm").elements["order"].value;
-
+const deleteOrder = (id) => {
     if (id != null){
         let data = {
             "id_order":id

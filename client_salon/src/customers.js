@@ -8,7 +8,8 @@ const showCustomersListPage = () => {
         let str = '';
         if(customers.length!=0){
 
-            str += '<table>';
+            str += '<table class="infoTable" style="width: 80%;">';
+            str += '<tr><td>Klient</td><td>Nazwa firmy</td><td>NIP</td><td>Ulica</td><td>Nr domu</td><td>Kod pocztowy</td><td>Miejscowość</td><td>Nr telefonu</td><td>Email</td><td></td><td></td></tr>';
             for(let i=0; i<customers.length; i++){
                 if(customers[i].companyName==null){
                     customers[i].companyName = '';
@@ -16,9 +17,15 @@ const showCustomersListPage = () => {
                 if(customers[i].nip==null){
                     customers[i].nip = '';
                 }
-                str += '<tr><td>'+customers[i].surname+'</td><td>'+customers[i].firstName+'</td><td>'+customers[i].companyName+'</td><td>'+customers[i].nip+'</td>';
-                str += '<td>'+customers[i].street+'</td><td>'+customers[i].flatNumber+'</td><td>'+customers[i].postalCode+'</td><td>'+customers[i].city+'</td>';
-                str += '<td>'+customers[i].phoneNumber+'</td><td>'+customers[i].email+'</td>';
+                str += '<tr><td>'+customers[i].surname+' '+customers[i].firstName+'</td>';
+                str += '<td>'+customers[i].companyName+'</td>';
+                str += '<td>'+customers[i].nip+'</td>';
+                str += '<td>'+customers[i].street+'</td>';
+                str += '<td>'+customers[i].flatNumber+'</td>';
+                str += '<td>'+customers[i].postalCode+'</td>';
+                str += '<td>'+customers[i].city+'</td>';
+                str += '<td>'+customers[i].phoneNumber+'</td>';
+                str += '<td>'+customers[i].email+'</td>';
                 str += '<td><button id="'+customers[i].id_customer+'">Edytuj</button></td>';
                 str += '<td><button onclick="deleteCustomer('+customers[i].id_customer+');">Usuń</button></td>';
                 str += '</tr>';
@@ -68,31 +75,52 @@ const showUpdateCustomerProfile = async () => {
 const showUpdateCustomer = (customer) => {
 let container = document.getElementById("content");
 container.innerHTML = `
-
+    <table id="registerTable">
     <form>
-    <label for="name">Imię:</label>
-    <input id="name" name="name" value="`+ customer.firstName +`"/></br>
-    <label for="surname">Nazwisko:</label>
-    <input id="surname" name="surname" value="`+ customer.surname +`"/></br>
-    <label for="companyName">Nazwa firmy:</label>
-    <input id="companyName" name="companyName" value="`+ customer.companyName +`"/></br>
-    <label for="nip">NIP:</label>
-    <input id="nip" name="nip" value="`+ customer.nip +`"/></br>
-    <label for="street">Ulica:</label>
-    <input id="street" name="street" value="`+ customer.street +`"/></br>
-    <label for="flatNumber">Numer mieszkania:</label>
-    <input id="flatNumber" name="flatNumber" value="`+ customer.flatNumber +`"/></br>
-    <label for="postalCode">Kod pocztowy:</label>
-    <input id="postalCode" name="postalCode" value="`+ customer.postalCode +`"/></br>
-    <label for="city">Miasto:</label>
-    <input id="city" name="city" value="`+ customer.city +`"/></br>
-    <label for="phoneNumber">Numer telefonu:</label>
-    <input id="phoneNumber" name="phoneNumber" value="`+ customer.phoneNumber +`"/></br>
-    <label for="email">Email:</label>
-    <input id="email" name="email" value="`+ customer.email +`"/></br>
+    <tr>
+    <td><label for="name">Imię:</label></td>
+    <td><input class="form-control" id="name" name="name" value="`+ customer.firstName +`"/></td>
+    </tr>
+    <tr>
+    <td><label for="surname">Nazwisko:</label></td>
+    <td><input class="form-control" id="surname" name="surname" value="`+ customer.surname +`"/></td>
+    </tr>
+    <tr>
+    <td><label for="companyName">Nazwa firmy:</label></td>
+    <td><input class="form-control" id="companyName" name="companyName" value="`+ customer.companyName +`"/></td>
+    </tr>
+    <tr>
+    <td><label for="nip">NIP:</label></td>
+    <td><input class="form-control" id="nip" name="nip" value="`+ customer.nip +`"/></td>
+    </tr>
+    <tr>
+    <td><label for="street">Ulica:</label></td>
+    <td><input class="form-control" id="street" name="street" value="`+ customer.street +`"/></td>
+    </tr>
+    <tr>
+    <td><label for="flatNumber">Numer mieszkania:</label></td>
+    <td><input class="form-control" id="flatNumber" name="flatNumber" value="`+ customer.flatNumber +`"/></td>
+    </tr>
+    <tr>
+    <td><label for="postalCode">Kod pocztowy:</label></td>
+    <td><input class="form-control" id="postalCode" name="postalCode" value="`+ customer.postalCode +`"/></td>
+    </tr>
+    <tr>
+    <td><label for="city">Miasto:</label></td>
+    <td><input class="form-control" id="city" name="city" value="`+ customer.city +`"/></td>
+    </tr>
+    <tr>
+    <td><label for="phoneNumber">Numer telefonu:</label></td>
+    <td><input class="form-control" id="phoneNumber" name="phoneNumber" value="`+ customer.phoneNumber +`"/></td>
+    </tr>
+    <tr>
+    <td><label for="email">Email:</label></td>
+    <td><input class="form-control" id="email" name="email" value="`+ customer.email +`"/></td>
+    </tr>
     </form>
-    
-    <button id="updateCustomerBtn">Zmodyfikuj</button>
+    <tr>
+    <td colspan="2" style="text-align: center"><button id="updateCustomerBtn">Zmodyfikuj</button></td>
+    </tr>
 `;
 
 let btn = document.getElementById("updateCustomerBtn");
@@ -105,33 +133,59 @@ btn.addEventListener("click", function(){
 const showAddCustomerPage = () => {
     let container = document.getElementById("content");
     container.innerHTML = `
+    <table id="registerTable">
     <form>
-    <label for="email">Email:</label>
-    <input id="email" name="email" required/></br>
-    <label for="password">Hasło:</label>
-    <input type="password" id="password" name="password" required/></br>
-    <label for="passwordConfirm">Powtórz hasło:</label>
-    <input type="password" id="passwordConfirm" name="passwordConfirm" required/></br>
-    <label for="name">Imię:</label>
-    <input id="name" name="name"/></br>
-    <label for="surname">Nazwisko:</label>
-    <input id="surname" name="surname"/></br>
-    <label for="companyName">Nazwa firmy:</label>
-    <input id="companyName" name="companyName"/></br>
-    <label for="nip">NIP:</label>
-    <input id="nip" name="nip"/></br>
-    <label for="street">Ulica:</label>
-    <input id="street" name="street"/></br>
-    <label for="flatNumber">Numer mieszkania:</label>
-    <input id="flatNumber" name="flatNumber"/></br>
-    <label for="postalCode">Kod pocztowy:</label>
-    <input id="postalCode" name="postalCode"/></br>
-    <label for="city">Miasto:</label>
-    <input id="city" name="city"/></br>
-    <label for="phoneNumber">Numer telefonu:</label>
-    <input id="phoneNumber" name="phoneNumber"/></br>
+    <tr>
+    <td><label for="email">Email:</label></td>
+    <td><input class="form-control" id="email" name="email" required/></td>
+    </tr>
+    <tr>
+    <td><label for="password">Hasło:</label></td>
+    <td><input class="form-control" type="password" id="password" name="password" required/></td>
+    </tr>
+    <tr>
+    <td><label for="passwordConfirm">Powtórz hasło:</label></td>
+    <td><input class="form-control"  type="password" id="passwordConfirm" name="passwordConfirm" required/></td>
+    </tr>
+    <tr>
+    <td><label for="name">Imię:</label></td>
+    <td><input class="form-control" id="name" name="name"/></td>
+    </tr>
+    <tr>
+    <td><label for="surname">Nazwisko:</label></td>
+    <td><input class="form-control" id="surname" name="surname"/></td>
+    </tr>
+    <tr>
+    <td><label for="companyName">Nazwa firmy:</label></td>
+    <td><input class="form-control" id="companyName" name="companyName"/></td>
+    </tr>
+    <tr>
+    <td><label for="nip">NIP:</label></td>
+    <td><input class="form-control" id="nip" name="nip"/></td>
+    </tr>
+    <tr>
+    <td><label for="street">Ulica:</label></td>
+    <td><input class="form-control" id="street" name="street"/></td>
+    </tr>
+    <tr>
+    <td><label for="flatNumber">Numer mieszkania:</label></td>
+    <td><input class="form-control" id="flatNumber" name="flatNumber"/></td>
+    </tr>
+    <tr>
+    <td><label for="postalCode">Kod pocztowy:</label></td>
+    <td><input class="form-control" id="postalCode" name="postalCode"/></td>
+    </tr>
+    <tr>
+    <td><label for="city">Miasto:</label></td>
+    <td><input class="form-control" id="city" name="city"/></td>
+    </tr>
+    <tr>
+    <td><label for="phoneNumber">Numer telefonu:</label></td>
+    <td><input class="form-control" id="phoneNumber" name="phoneNumber"/></td>
+    </tr>
     </form>
-    <button id="addCustomerBtn">Dodaj</button>
+    <tr><td colspan="2" style="text-align: center"><button id="addCustomerBtn">Dodaj</button></td></tr>
+    </table>
 `;
     let btn = document.getElementById("addCustomerBtn");
     btn.addEventListener("click", addCustomer);

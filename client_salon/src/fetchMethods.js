@@ -1,7 +1,7 @@
 let auth = null;
 let user = null;
 let role = null;
-const url = 'http://localhost:8081';
+const url = 'https://shrouded-anchorage-63411.herokuapp.com';
 
 async function getData(path=''){
     let addr = url + path;

@@ -9,12 +9,13 @@ const showReleaseRoomPage = () => {
         str += '<label for="showFromToday">Pokaż od dzisiaj</label><input type="checkbox" id="showFromToday" name="showFromToday">';
 
         if(releases.length!==0){
-            str += '<table>';
+            str += '<table class="infoTable">';
+            str += '<tr><td>Pracownik odpowiedzialny</td><td>Id. zamówienia</td><td>Data wydania</td><td></td></tr>';
             for(let i=0; i<releases.length; i++){
-                str += '<tr><td>'+releases[i].surname+'</td>';
-                str += '<td>'+releases[i].name+'</td>';
+                str += '<tr>';
+                str += '<td>'+releases[i].surname+' '+releases[i].name+'</td>';
                 str += '<td>'+releases[i].id_order+'</td>';
-                str += '<td>'+releases[i].date+'</td>';
+                str += '<td>'+timeConverter(releases[i].date)+'</td>';
                 str += '<td><button onclick="deleteRelease('+releases[i].id_release+');">Usuń</button></td>';
                 str += '</tr>';
             }
@@ -39,12 +40,12 @@ const showFromTodayReleaseRoomPage = () => {
         let str = '';
         str += '<label for="showFromToday">Pokaż od dzisiaj</label><input type="checkbox" id="showFromToday" name="showFromToday" checked>';
         if(releases.length!==0){
-            str += '<table>';
+            str += '<table class="infoTable">';
+            str += '<tr><td>Pracownik odpowiedzialny</td><td>Id. zamówienia</td><td>Data wydania</td><td></td></tr>';
             for(let i=0; i<releases.length; i++){
-                str += '<tr><td>'+releases[i].surname+'</td>';
-                str += '<td>'+releases[i].name+'</td>';
+                str += '<tr><td>'+releases[i].surname+' '+releases[i].name+'</td>';
                 str += '<td>'+releases[i].id_order+'</td>';
-                str += '<td>'+releases[i].date+'</td>';
+                str += '<td>'+timeConverter(releases[i].date)+'</td>';
                 str += '<td><button onclick="deleteRelease('+releases[i].id_release+');">Usuń</button></td>';
                 str += '</tr>';
             }
@@ -54,6 +55,71 @@ const showFromTodayReleaseRoomPage = () => {
         checkActive.addEventListener("change", function() {
             if (!this.checked){
                 showReleaseRoomPage();
+            }
+        });
+    });
+}
+
+const showCustomerReleaseRoomPage = () => {
+    let container = document.getElementById("content");
+    let releases = [];
+    let params = new URLSearchParams({
+        id_customer:sessionStorage.getItem("user")
+    })
+    getDataWithParams('/release-room/getCustomerAll', params).then(data => {
+        for(let i=0; i<data.length;i++){
+            releases.push(data[i]);
+        }
+        let str = '';
+        str += '<label for="showFromToday">Pokaż od dzisiaj</label><input type="checkbox" id="showFromToday" name="showFromToday">';
+
+        if(releases.length!==0){
+            str += '<table class="infoTable">';
+            str += '<tr><td>Osoba odpowiedzialna</td><td>Id. zamówienia</td><td>Data wydania</td></tr>';
+            for(let i=0; i<releases.length; i++){
+                str += '<tr><td>'+releases[i].surname+' '+releases[i].name+'</td>';
+                str += '<td>'+releases[i].id_order+'</td>';
+                str += '<td>'+timeConverter(releases[i].date)+'</td>';
+                str += '</tr>';
+            }
+        }
+        container.innerHTML = str;
+        let checkActive = document.querySelector("input[name=showFromToday]");
+        checkActive.addEventListener("change", function() {
+            if (this.checked){
+                showCustomerFromTodayReleaseRoomPage();
+            }
+        });
+    });
+}
+
+const showCustomerFromTodayReleaseRoomPage = () => {
+    let container = document.getElementById("content");
+    let releases = [];
+    let params = new URLSearchParams({
+        id_customer:sessionStorage.getItem("user")
+    })
+    getDataWithParams('/release-room/getCustomerAllFromToday', params).then(data => {
+        for(let i=0; i<data.length;i++){
+            releases.push(data[i]);
+        }
+        let str = '';
+        str += '<label for="showFromToday">Pokaż od dzisiaj</label><input type="checkbox" id="showFromToday" name="showFromToday" checked>';
+        if(releases.length!==0){
+            str += '<table class="infoTable">';
+            str += '<tr><td>Osoba odpowiedzialna</td><td>Id. zamówienia</td><td>Data wydania</td></tr>';
+            for(let i=0; i<releases.length; i++){
+                str += '<tr><td>'+releases[i].surname+' '+releases[i].name+'</td>';
+                str += '<td>'+releases[i].id_order+'</td>';
+                str += '<td>'+timeConverter(releases[i].date)+'</td>';
+                str += '</tr>';
+            }
+        }
+        container.innerHTML = str;
+        let checkActive = document.querySelector("input[name=showFromToday]");
+        checkActive.addEventListener("change", function() {
+            if (!this.checked){
+                showCustomerReleaseRoomPage();
             }
         });
     });
@@ -88,15 +154,23 @@ const showAddReleasePage = async () => {
     let orders = await getActiveOrdersOptionList();
     let container = document.getElementById("content");
     container.innerHTML = `
+    <table id="registerTable">
     <form>
-    <label for="employees">Pracownik:</label>
-    <select id="employees" name="employees">`+employees+`</select></br>
-    <label for="order">Zamówienie</label>
-    <select id="order" name="order">`+orders+`</select></br>
-    <label for="date">Data</label>
-    <input type="date" id="date" name="date" value="2021-01-01">
-    <label for="time">Godzina</label>
-    <select id="time" name="time">
+    <tr>
+    <td><label for="employees">Pracownik:</label></td>
+    <td><select class="form-control" id="employees" name="employees">`+employees+`</select></td>
+    </tr>
+    <tr>
+    <td><label for="order">Zamówienie</label></td>
+    <td><select class="form-control" id="order" name="order">`+orders+`</select></td>
+    </tr>
+    <tr>
+    <td><label for="date">Data</label></td>
+    <td><input class="form-control" type="date" id="date" name="date" value="2021-01-01"></td>
+    </tr>
+    <tr>
+    <td><label for="time">Godzina</label></td>
+    <td><select class="form-control" id="time" name="time">
         <option value="10:00">10:00</option>
         <option value="10:30">10:30</option>
         <option value="11:00">11:00</option>
@@ -110,9 +184,13 @@ const showAddReleasePage = async () => {
         <option value="15:00">15:00</option>
         <option value="15:30">15:30</option>
         <option value="16:00">16:00</option>
-    </select>
+    </select></td>
+    </tr>
     </form>
-    <button id="addRelease">Dodaj</button>
+    <tr>
+    <td colspan="2" style="text-align: center;"><button id="addRelease">Dodaj</button></td>
+    </tr>
+    </table>
     `;
 
     let addReleaseBtn = document.getElementById("addRelease");
@@ -137,4 +215,20 @@ const addRelease = () => {
         }
     })
 
+}
+
+function timeConverter(timestamp){
+    let date = timestamp.split('T')[0];
+    let time = timestamp.split('T')[1];
+    let splitTime = time.split(':');
+    let splitDate = date.split('-');
+    let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    let year = splitDate[0];
+    let month = months[splitDate[1]-1];
+    let day = splitDate[2];
+    let hour = splitTime[0];
+    let min = splitTime[1];
+
+    let convertedDate = day + ' ' + month + ' ' + year + ' ' + hour + ':' + min;
+    return convertedDate;
 }

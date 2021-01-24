@@ -35,7 +35,7 @@ public class EmployeeController {
 
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_pracownika, imie, nazwisko, stanowisko, email FROM salon.pracownicy", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT id_pracownika, imie, nazwisko, stanowisko, email FROM salon.pracownicy order by nazwisko, imie", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     employees.add(new Employee(rs.getInt("id_pracownika"),
@@ -64,7 +64,7 @@ public class EmployeeController {
 
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_pracownika, imie, nazwisko, stanowisko, email FROM salon.pracownicy where stanowisko='sprzedawca'", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT id_pracownika, imie, nazwisko, stanowisko, email FROM salon.pracownicy where stanowisko='sprzedawca' order by nazwisko, imie", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     employees.add(new Employee(rs.getInt("id_pracownika"),

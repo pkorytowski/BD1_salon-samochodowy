@@ -8,14 +8,31 @@ const showActiveUnitsList = () => {
         let str = '';
         str += '<label for="checkActive">Pokaż wszystkie egzemplarze</label><input type="checkbox" id="checkActive" name="checkActive">';
         if (units.length!==0){
-            str += '<table>';
+            str += '<table class="infoTable" style="width:70%">';
+            str += '<tr><td>Id egz.</td><td>Status</td><td>Model</td><td>Silnik</td><td>Wer. wyposażenia</td><td>Kolor</td><td>Cena wyjściowa</td><td>Klient</td><td></td><td></td></tr>';
             for(let i=0; i<units.length; i++){
-                str += '<tr><td>'+units[i].id_unit+'</td><td>' + units[i].status + '</td>' + '<td>' + units[i].car.model + '</td>' + '<td>';
-                str += units[i].car.engine + '</td>' + '<td>' + units[i].car.version + '</td><td>' + units[i].color;
-                str += '</td><td>'+units[i].value+'</td><td>'+units[i].customer.surname+'</td><td>'+units[i].customer.firstName+'</td>';
+                let client='';
+                if(units[i].customer.firstName!=null){
+                    client += units[i].customer.firstName+' ';
+                }
+                if(units[i].customer.surname!=null){
+                    client += units[i].customer.surname
+                }
+                str += '<tr>';
+                str += '<td>' + units[i].id_unit + '</td>';
+                str += '<td>' + units[i].status + '</td>';
+                str += '<td>' + units[i].car.model + '</td>';
+                str += '<td>' + units[i].car.engine + '</td>';
+                str += '<td>' + units[i].car.version + '</td>';
+                str += '<td>' + units[i].color + '</td>';
+                str += '<td>'+ units[i].value + '</td>';
+                str += '<td>'+ client +'</td>';
                 str += '<td><button onclick="changeUnit('+units[i].id_unit+');">Zmień status</button></td>';
                 if(units[i].status==='skonfigurowano'){
                     str += '<td><button onclick="deleteUnit('+units[i].id_unit+');">Usuń pojazd</button></td>';
+                }
+                else{
+                    str += '<td></td>'
                 }
                 str += '</tr>';
             }
@@ -42,20 +59,35 @@ const showUnitsList = () => {
         let str = '';
         str += '<label for="checkActive">Pokaż wszystkie egzemplarze</label><input type="checkbox" id="checkActive" name="checkActive" checked/>';
         if (units.length!=0){
-            str += '<table>';
+            str += '<table class="infoTable" style="width:70%">';
+            str += '<tr><td>Id egz.</td><td>Status</td><td>Model</td><td>Silnik</td><td>Wer. wyposażenia</td><td>Kolor</td><td>Cena wyjściowa</td><td>Klient</td><td></td><td></td></tr>';
             for(let i=0; i<units.length; i++){
-                str += '<tr><td>' + units[i].status + '</td>' + '<td>' + units[i].car.model + '</td>' + '<td>';
-                str += units[i].car.engine + '</td>' + '<td>' + units[i].car.version + '</td><td>' + units[i].color;
-                str += '</td><td>'+units[i].value+'</td><td>'+units[i].customer.surname+'</td><td>'+units[i].customer.firstName+'</td>';
+                let client='';
+                if(units[i].customer.firstName!=null){
+                    client += units[i].customer.firstName+' ';
+                }
+                if(units[i].customer.surname!=null){
+                    client += units[i].customer.surname
+                }
+                str += '<tr>';
+                str += '<td>'+units[i].id_unit+'</td>';
+                str += '<td>' + units[i].status + '</td>';
+                str += '<td>' + units[i].car.model + '</td>';
+                str += '<td>' + units[i].car.engine + '</td>';
+                str += '<td>' + units[i].car.version + '</td>';
+                str += '<td>' + units[i].color + '</td>';
+                str += '<td>' + units[i].value + '</td>';
+                str += '<td>' + client + '</td>';
                 str += '<td><button onclick="changeUnit('+units[i].id_unit+');">Zmień status</button></td>';
                 if(units[i].status==='skonfigurowano'){
                     str += '<td><button onclick="deleteUnit('+units[i].id_unit+');">Usuń pojazd</button></td>';
                 }
+                else {
+                    str += '<td></td>';
+                }
                 str += '</tr>';
             }
             str += '</table>';
-            str += '<button id="deleteUnit">Usuń pojazd</button>';
-            str += '<button id="changeUnitStatus">Zmień status</button>';
         }
         container.innerHTML = str;
 
@@ -80,11 +112,17 @@ const showCustomerUnitsList = () => {
         }
         let str = '';
         if (units.length!==0){
-            str += '<table>';
+            str += '<table class="infoTable">';
+            str += '<tr><td>Id egz.</td><td>Status</td><td>Model</td><td>Silnik</td><td>Wer. wyposażenia</td><td>Kolor</td><td>Cena wyjściowa</td><td></td></tr>';
             for(let i=0; i<units.length; i++){
-                str += '<tr><td>'+units[i].id_unit+'</td><td>' + units[i].status + '</td>' + '<td>' + units[i].car.model + '</td>' + '<td>';
-                str += units[i].car.engine + '</td>' + '<td>' + units[i].car.version + '</td><td>' + units[i].color;
-                str += '</td><td>'+units[i].value+'</td><td>'+units[i].customer.surname+'</td><td>'+units[i].customer.firstName+'</td>';
+                str += '<tr>';
+                str += '<td>' + units[i].id_unit + '</td>';
+                str += '<td>' + units[i].status + '</td>';
+                str += '<td>' + units[i].car.model + '</td>';
+                str += '<td>' + units[i].car.engine + '</td>';
+                str += '<td>' + units[i].car.version + '</td>';
+                str += '<td>' + units[i].color + '</td>';
+                str += '<td>' + units[i].value + '</td>';
                 if(units[i].status==='skonfigurowano'){
                     str += '<td><button onclick="deleteUnit('+units[i].id_unit+');">Usuń pojazd</button></td>';
                 }
@@ -187,13 +225,22 @@ const showAddUnitPage = async () => {
     let colors = await getColorOptionList();
     let customers = await getCustomersOptionList();
     container.innerHTML = `
-        <label for="selectCar">Samochód</label>
-        <select id="selectCar" name="selectCar">`+ cars +`</select></br>
-        <label for="selectColor">Kolor</label>
-        <select id="selectColor" name="selectColor">`+ colors +`</select></br>
-        <label for="selectCustomers">Klient</label>
-        <select id="selectCustomers" name="selectCustomers">`+customers+`</select></br>
+        <table id="unitTable">
+        <tr>
+        <td><label for="selectCar">Samochód:</label></td>
+        <td><select class="form-control" id="selectCar" name="selectCar">`+ cars +`</select></td>
+        </tr>
+        <tr>
+        <td><label for="selectColor">Kolor:</label></td>
+        <td><select class="form-control" id="selectColor" name="selectColor">`+ colors +`</select></td>
+        </tr>
+        <tr>
+        <td><label for="selectCustomers">Klient:</label></td>
+        <td><select class="form-control" id="selectCustomers" name="selectCustomers">`+customers+`</select></td>
+        </tr>
+        </table>
         <button id="addNewUnitBtn">Dodaj</button>
+        
     `;
 
     let addBtn = document.getElementById("addNewUnitBtn");
@@ -205,11 +252,19 @@ const showCustomerAddUnitPage = async () => {
     let cars = await getCarOptionList();
     let colors = await getColorOptionList();
     container.innerHTML = `
-        <label for="selectCar">Samochód</label>
-        <select id="selectCar" name="selectCar">`+ cars +`</select></br>
-        <label for="selectColor">Kolor</label>
-        <select id="selectColor" name="selectColor">`+ colors +`</select></br>
-        <button id="addNewUnitBtn">Dodaj</button>
+        <table id="registerTable" style="width:40%">
+        <tr>
+        <td><label for="selectCar">Samochód</label></td>
+        
+        <td><select class="form-control" id="selectCar" name="selectCar">`+ cars +`</select></td>
+        </tr>
+        <tr>
+        <td><label for="selectColor">Kolor</label></td>
+        <td><select class="form-control" id="selectColor" name="selectColor">`+ colors +`</select></td>
+        </tr>
+        <tr><td colspan="2" style="text-align: center"><button id="addNewUnitBtn">Dodaj</button></td></tr>
+        </table>
+        
     `;
 
     let addBtn = document.getElementById("addNewUnitBtn");
@@ -233,7 +288,6 @@ const addNewUnit = () =>{
         "id_color": document.getElementById("selectColor").value,
         "status": "skonfigurowano"
     };
-    console.log(data);
     postData("/units/add", data).then(response => {
         if(response.ok){
             alert("Dodano pojazd!");

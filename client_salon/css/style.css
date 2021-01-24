@@ -2,12 +2,8 @@ body {
     padding: 0;
     width: 80%;
     margin: auto;
-    background: #707070;
+    background: #459c9c;
     box-sizing: border-box;
-}
-
-body > * {
-    font-family: Courier;
 }
 
 header {
@@ -15,10 +11,22 @@ header {
     margin: auto;
     padding-top: 60px;
     padding-bottom: 60px;
-    background-color:  #3F3F3F;
+    background-color:  #1F2833;
     color: white;
-
 }
+
+.bg-primary{
+    background-color: black !important;
+}
+
+.dropdown-toggle{
+    color: #56d0d0 !important;
+}
+
+.dropdown-menu a:hover{
+    background-color: #56d0d0 !important;
+}
+
 
 header h1 {
     width: 100%;
@@ -33,95 +41,14 @@ nav {
     text-align: center;
 }
 
-ol {
-    list-style-type:none;
-    padding:0;
-    margin:0;
-    background-color:#202020;
-    height:4em;
-    line-height:2em;
-    text-align:center;
-}
-
-ol a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 15px 20px;
-    text-decoration: none;
-    font-size: 16pt;
-    font-weight: bolder;
-}
-
-ol > li {
-    float:left;
-    margin-left:1px;
-    width:14.23%;
-    background-color:black;
-    height:4em;
-}
-
-ol > .customerMenu {
-    width:19.9%;
-    margin-left: 1px;
-}
-
-ol > li:first-child {
-    margin-left:0;
-}
-
-ol > li:hover {
-    color: white;
-    background-color: #d6aa62;
-}
-
-ol > li:hover > a {
-    color: #000000;
-}
-
-ol > li:hover > ul {
-    display:block;
-}
-
-ol > li > ul {
-    display:none;
-    list-style-type:none;
-    padding:0;
-    margin:0;
-}
-
-/* wygląd elementu - li - w części rozwijanej */
-ol > li > ul > li {
-    position:relative;
-    background-color:#EEE;
-}
-
-/* wygląd elementu - a - w części rozwijanej */
-ol > li > ul > li > a {
-    border-top:1px solid #FFF;
-    color: black;
-}
-
-/* wygląd elementu - li - w części rozwijanej, po najechaniu kursorem myszki na dany element - li */
-ol > li > ul > li:hover {
-    background-color:#DDD;
-}
-
-/* wygląd elementu - a - w części rozwijanej, po najechaniu kursorem myszki na element - li */
-ol > li > ul > li:hover > a {
-    color:#09C;
-}
-
-
-
 main {
     width: 100%;
+    margin: auto;
     background-color:  #C9C9C9;
     height: 100%;
     box-sizing: border-box;
-    min-height: 600px;
+    min-height: 900px;
     padding: 0;
-    margin: 0;
 }
 
 h3 {
@@ -139,53 +66,52 @@ h3 {
     margin: 15px;
     width:300px;
     height: 50px;
-    background-color: black;
+    background-color: #1F2833;
     border: none;
     color: white;
-    font-family: Courier;
     font-weight: bold;
     font-size: larger;
 }
 
 .loginButtons:hover{
-    background-color: #d6aa62;
+    background-color: #56d0d0;
+}
+
+#unitTable{
+    width: 40%;
+    margin:auto;
+}
+
+#unitTable tr td:first-child{
+    text-align: left;
+    width: 25%;
 }
 
 #registerTable{
     border-collapse: collapse;
+    width: 40%;
+    margin:auto;
+}
 
+#registerTable tr:hover {
+    background-color: #1F2833;
+    color:white;
 }
 
 #registerTable tr td:first-child{
     text-align: left;
 }
 
-#registerTable tr:nth-child(odd){
-    background-color: #DDDDDD;
-}
-
-#registerTable tr:nth-child(odd) td:last-child > *{
-    background-color: #DDDDDD;
-    border: #5E5E5E 1px solid;
-}
-
-#registerTable tr:nth-child(even){
-    background-color: #707070;
-}
-
-#registerTable tr:nth-child(even) td:last-child > *{
-    background-color: #707070;
-    border: #5E5E5E 1px solid;
-}
 
 .infoTable{
     margin:auto;
     width:60%;
     border-collapse: collapse;
+    border:#1F2833 1px solid;
 }
 
 .infoTable > tbody > tr:first-child{
-    background-color: #3F3F3F;
+    background-color: #1F2833;
     color: white
 }
 
@@ -198,21 +124,25 @@ h3 {
 }
 .infoTable .hiddenRow table > tbody tr td:first-child {
     text-align: left;
+    border-right: #DDDDDD 1px solid;
 }
 
 .infoTable .hiddenRow table{
     border-collapse: collapse;
 }
 
-
 .infoTable .hiddenRow table > tbody tr td{
     background-color: #BABABA;
     border-bottom: #ACACAC 1px solid;
-
 }
 
 .infoTable .visibleRow:hover{
-    background-color: #3F3F3F;
+    background-color: #1F2833;
     color: white
 }
+
+.justifyTd{
+    text-align: justify;
+}
+
 

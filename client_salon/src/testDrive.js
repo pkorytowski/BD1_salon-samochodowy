@@ -8,14 +8,13 @@ const showTestDrivePage = () => {
         let str = '';
         str += '<label for="showFromToday">Pokaż od dzisiaj</label><input type="checkbox" id="showFromToday" name="showFromToday">';
         if(test_drives.length!==0){
-            str += '<table>';
+            str += '<table class="infoTable">';
+            str += '<tr><td>Pracownik odpowiedzialny</td><td>Klient</td><td>Id. egzemplarza</td><td>Data</td><td></td></tr>';
             for(let i=0; i<test_drives.length; i++){
-                str += '<tr><td>'+test_drives[i].employeeSurname+'</td>';
-                str += '<td>'+test_drives[i].employeeName+'</td>';
-                str += '<td>'+test_drives[i].customerSurname+'</td>';
-                str += '<td>'+test_drives[i].customerName+'</td>';
+                str += '<tr><td>'+test_drives[i].employeeSurname+' '+test_drives[i].employeeName+'</td>';
+                str += '<td>'+test_drives[i].customerSurname+' '+test_drives[i].customerName+'</td>';
                 str += '<td>'+test_drives[i].id_unit+'</td>';
-                str += '<td>'+test_drives[i].date+'</td>';
+                str += '<td>'+timeConverter(test_drives[i].date)+'</td>';
                 str += '<td><button onclick="deleteTestDrive('+test_drives[i].id_test_drive+');">Usuń</button></td>';
                 str += '</tr>';
             }
@@ -40,14 +39,13 @@ const showFromTodayTestDrivePage = () => {
         let str = '';
         str += '<label for="showFromToday">Pokaż od dzisiaj</label><input type="checkbox" id="showFromToday" name="showFromToday" checked>';
         if(test_drives.length!==0){
-            str += '<table>';
+            str += '<table class="infoTable">';
+            str += '<tr><td>Pracownik odpowiedzialny</td><td>Klient</td><td>Id. egzemplarza</td><td>Data</td><td></td></tr>';
             for(let i=0; i<test_drives.length; i++){
-                str += '<tr><td>'+test_drives[i].employeeSurname+'</td>';
-                str += '<td>'+test_drives[i].employeeName+'</td>';
-                str += '<td>'+test_drives[i].customerSurname+'</td>';
-                str += '<td>'+test_drives[i].customerName+'</td>';
+                str += '<tr><td>'+test_drives[i].employeeSurname+' '+test_drives[i].employeeName+'</td>';
+                str += '<td>'+test_drives[i].customerSurname+' '+test_drives[i].customerName+'</td>';
                 str += '<td>'+test_drives[i].id_unit+'</td>';
-                str += '<td>'+test_drives[i].date+'</td>';
+                str += '<td>'+timeConverter(test_drives[i].date)+'</td>';
                 str += '<td><button onclick="deleteTestDrive('+test_drives[i].id_test_drive+');">Usuń</button></td>';
                 str += '</tr>';
             }
@@ -75,12 +73,12 @@ const showCustomerTestDrivePage = () => {
         let str = '';
         str += '<label for="showFromToday">Pokaż od dzisiaj</label><input type="checkbox" id="showFromToday" name="showFromToday">';
         if(test_drives.length!==0){
-            str += '<table>';
+            str += '<table class="infoTable">';
+            str += '<tr><td>Pracownik odpowiedzialny</td><td>Id egzemplarza</td><td>Data</td></tr>';
             for(let i=0; i<test_drives.length; i++){
-                str += '<tr><td>'+test_drives[i].employeeSurname+'</td>';
-                str += '<td>'+test_drives[i].employeeName+'</td>';
+                str += '<tr><td>'+test_drives[i].employeeSurname+ ' ' +test_drives[i].employeeName+'</td>';
                 str += '<td>'+test_drives[i].id_unit+'</td>';
-                str += '<td>'+test_drives[i].date+'</td>';
+                str += '<td>'+timeConverter(test_drives[i].date)+'</td>';
                 str += '</tr>';
             }
         }
@@ -107,12 +105,12 @@ const showCustomerFromTodayTestDrivePage = () => {
         let str = '';
         str += '<label for="showFromToday">Pokaż od dzisiaj</label><input type="checkbox" id="showFromToday" name="showFromToday" checked>';
         if(test_drives.length!==0){
-            str += '<table>';
+            str += '<table class="infoTable">';
+            str += '<tr><td>Pracownik odpowiedzialny</td><td>Id egzemplarza</td><td>Data</td></tr>'
             for(let i=0; i<test_drives.length; i++){
-                str += '<tr><td>'+test_drives[i].employeeSurname+'</td>';
-                str += '<td>'+test_drives[i].employeeName+'</td>';
+                str += '<tr><td>'+test_drives[i].employeeSurname+ ' ' +test_drives[i].employeeName+'</td>';
                 str += '<td>'+test_drives[i].id_unit+'</td>';
-                str += '<td>'+test_drives[i].date+'</td>';
+                str += '<td>'+timeConverter(test_drives[i].date)+'</td>';
                 str += '</tr>';
             }
         }
@@ -156,17 +154,27 @@ const showAddTestDrivePage = async () => {
     let customers = await getCustomersOptionList();
     let container = document.getElementById("content");
     container.innerHTML = `
+    <table id="registerTable">
     <form>
-    <label for="employees">Pracownik:</label>
-    <select id="employees" name="employees">`+employees+`</select></br>
-    <label for="customers">Klient:</label>
-    <select id="customers" name="customers">`+customers+`</select></br>
-    <label for="unit">Pojazd</label>
-    <select id="unit" name="unit">`+units+`</select></br>
-    <label for="date">Data</label>
-    <input type="date" id="date" name="date" value="2021-01-01">
-    <label for="time">Godzina</label>
-    <select id="time" name="time">
+    <tr>
+    <td><label for="employees">Pracownik:</label></td>
+    <td><select class="form-control" id="employees" name="employees">`+employees+`</select></td>
+    </tr>
+    <tr>
+    <td><label for="customers">Klient:</label></td>
+    <td><select class="form-control" id="customers" name="customers">`+customers+`</select></td>
+    </tr>
+    <tr>
+    <td><label for="unit">Pojazd</label></td>
+    <td><select class="form-control" id="unit" name="unit">`+units+`</select></td>
+    </tr>
+    <tr>
+    <td><label for="date">Data</label></td>
+    <td><input class="form-control" type="date" id="date" name="date" value="2021-01-01"></td>
+    </tr>
+    <tr>
+    <td><label for="time">Godzina</label></td>
+    <td><select class="form-control" id="time" name="time">
         <option value="10:00">10:00</option>
         <option value="10:30">10:30</option>
         <option value="11:00">11:00</option>
@@ -180,9 +188,13 @@ const showAddTestDrivePage = async () => {
         <option value="15:00">15:00</option>
         <option value="15:30">15:30</option>
         <option value="16:00">16:00</option>
-    </select>
+    </select></td>
+    </tr>
     </form>
-    <button id="addTestDrive">Dodaj</button>
+    <tr>
+    <td colspan="2" style="text-align: center"><button id="addTestDrive">Dodaj</button></td>
+    </tr>
+    </table>
     `;
 
     let addTestDriveBtn = document.getElementById("addTestDrive");
@@ -194,15 +206,23 @@ const showCustomerAddTestDrivePage = async () => {
     let units = await getTestCarsOptionList();
     let container = document.getElementById("content");
     container.innerHTML = `
+    <table id="registerTable">
     <form>
-    <label for="employees">Pracownik:</label>
-    <select id="employees" name="employees">`+employees+`</select></br>
-    <label for="unit">Pojazd</label>
-    <select id="unit" name="unit">`+units+`</select></br>
-    <label for="date">Data</label>
-    <input type="date" id="date" name="date" value="2021-01-01">
-    <label for="time">Godzina</label>
-    <select id="time" name="time">
+    <tr>
+    <td><label for="employees">Pracownik:</label></td>
+    <td><select class="form-control" id="employees" name="employees">`+employees+`</select></td>
+    </tr>
+    <tr>
+    <td><label for="unit">Pojazd</label></td>
+    <td><select class="form-control" id="unit" name="unit">`+units+`</select></td>
+    </tr>
+    <tr>
+    <td><label for="date">Data</label></td>
+    <td><input class="form-control" type="date" id="date" name="date" value="2021-01-01"></td>
+    </tr>
+    <tr>
+    <td><label for="time">Godzina</label></td>
+    <td><select class="form-control" id="time" name="time">
         <option value="10:00">10:00</option>
         <option value="10:30">10:30</option>
         <option value="11:00">11:00</option>
@@ -216,9 +236,13 @@ const showCustomerAddTestDrivePage = async () => {
         <option value="15:00">15:00</option>
         <option value="15:30">15:30</option>
         <option value="16:00">16:00</option>
-    </select>
+    </select></td>
+    </tr>
     </form>
-    <button id="addTestDrive">Dodaj</button>
+    <tr>
+    <td colspan="2" style="text-align: center"><button id="addTestDrive">Dodaj</button></td>
+    </tr>
+    </table>
     `;
 
     let addTestDriveBtn = document.getElementById("addTestDrive");
@@ -243,7 +267,12 @@ const addTestDrive = () => {
     postData('/testdrive/add', data).then(response => {
         if(response.ok){
             alert("Dodano");
-            showReleaseRoomPage();
+            if(sessionStorage.getItem("role")==='ROLE_CLIENT'){
+                showCustomerTestDrivePage();
+            }
+            else{
+                showTestDrivePage();
+            }
         }
         else{
             alert("Wystąpił problem - podany pracownik o tej porze jest zajęty");

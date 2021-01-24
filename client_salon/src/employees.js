@@ -8,9 +8,14 @@ const showEmployeesPage = () => {
         let str = '';
         if(employees.length!=0){
 
-            str += '<table>';
+            str += '<table class="infoTable">';
+            str += '<tr><td>Imię</td><td>Nazwisko</td><td>Stanowisko</td><td>Email</td><td></td></tr>';
             for(let i=0; i<employees.length; i++){
-                str += '<tr><td>'+employees[i].surname+'</td><td>'+employees[i].name+'</td><td>'+employees[i].position+'</td><td>'+employees[i].email+'</td>';
+                str += '<tr>';
+                str += '<td>'+employees[i].name+'</td>';
+                str += '<td>'+employees[i].surname+'</td>';
+                str += '<td>'+employees[i].position+'</td>';
+                str += '<td>'+employees[i].email+'</td>';
                 str += '<td><button id="'+employees[i].id_employee+'">Edytuj</button></td>';
                 str += '</tr>';
             }
@@ -30,24 +35,40 @@ const showEmployeesPage = () => {
 const showAddEmployeePage = () => {
     let container = document.getElementById("content");
     container.innerHTML = `
-        <form xmlns="http://www.w3.org/1999/html">
-        <label for="name">Imię:</label>
-        <input type="text" id="name" name="name"/></br>
-        <label for="surname">Nazwisko:</label>
-        <input type="text" id="surname" name="surname"/></br>
-        <label for="position">Stanowisko:</label>
-        <select id="position" name="position">
-        <option value="sprzedawca" selected>Sprzedawca</option>
-        <option value="kierownik">Kierownik</option>
-        </select></br>
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email"/></br>
-        <label for="password">Hasło:</label>
-        <input type="password" id="password" name="password"/></br>
-        <label for="passwordConfirm">Powtórz hasło:</label>
-        <input type="password" id="passwordConfirm" name="passwordConfirm"/></br>
+        <table id="registerTable">
+        <form>
+        <tr>
+        <td><label for="name">Imię:</label></td>
+        <td><input class="form-control" type="text" id="name" name="name"/></td>
+        </tr>
+        <tr>
+        <td><label for="surname">Nazwisko:</label></td>
+        <td><input class="form-control" type="text" id="surname" name="surname"/></td>
+        </tr>
+        <tr>
+        <td><label for="position">Stanowisko:</label></td>
+        <td><select class="form-control" id="position" name="position">
+            <option value="sprzedawca" selected>Sprzedawca</option>
+            <option value="kierownik">Kierownik</option>
+        </select></td>
+        </tr>
+        <tr>
+        <td><label for="email">Email:</label></td>
+        <td><input class="form-control" type="text" id="email" name="email"/></td>
+        </tr>
+        <tr>
+        <td><label for="password">Hasło:</label></td>
+        <td><input class="form-control" type="password" id="password" name="password"/></td>
+        </tr>
+        <tr>
+        <td><label for="passwordConfirm">Powtórz hasło:</label></td>
+        <td><input class="form-control" type="password" id="passwordConfirm" name="passwordConfirm"/></td>
+        </tr>
+        <tr>
         </form>
-        <button onclick="addEmployee();">Dodaj pracownika</button>
+        <td colspan="2" style="text-align:center"><button onclick="addEmployee();">Dodaj pracownika</button></td>
+        </tr>
+        </table>
     `;
 }
 
@@ -58,7 +79,7 @@ const addEmployee = () => {
         let data = {
             "name": document.getElementById("name").value,
             "surname": document.getElementById("surname").value,
-            "position": document.getElementById("surname").value,
+            "position": document.getElementById("position").value,
             "email": document.getElementById("email").value,
             "password": password
         }
@@ -92,7 +113,7 @@ const showUpdateEmployee = (employee) => {
     <input id="surname" name="surname" value="`+ employee.surname +`"/></br>
     <label for="position">Stanowisko:</label>
     <select id="position" name="position" value="`+ employee.position +`">
-    <option value="`+position+` checked">`+position+`</option>
+    <option value="`+position+`" selected>`+position+`</option>
     <option value="`+position2+`">`+position2+`</option>
     </select></br>
     <label for="email">Email:</label>

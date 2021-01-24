@@ -52,54 +52,54 @@ const registerPanel = () => {
     let container = document.getElementById("content");
     container.innerHTML = `
     <form>
-    <table style="margin:auto" id="registerTable">
+    <table id="registerTable">
     <tr>
     <td><label for="email">Email:</label></td>
-    <td><input id="email" name="email" required/></td>
+    <td><input class="form-control" id="email" name="email" required/></td>
     </tr>
     <tr>
     <td><label for="password">Hasło:</label></td>
-    <td><input type="password" id="password" name="password" required/></td>
+    <td><input class="form-control" type="password" id="password" name="password" required/></td>
     </tr>
     <tr>
     <td><label for="passwordConfirm">Powtórz hasło:</label></td>
-    <td><input type="password" id="passwordConfirm" name="passwordConfirm" required/></td>
+    <td><input class="form-control" type="password" id="passwordConfirm" name="passwordConfirm" required/></td>
     </tr>
     <tr>
     <td><label for="name">Imię:</label></td>
-    <td><input id="name" name="name"/></td>
+    <td><input class="form-control" id="name" name="name"/></td>
     </tr>
     <tr>
     <td><label for="surname">Nazwisko:</label></td>
-    <td><input id="surname" name="surname"/></td>
+    <td><input class="form-control" id="surname" name="surname"/></td>
     </tr>
     <tr>
     <td><label for="companyName">Nazwa firmy:</label></td>
-    <td><input id="companyName" name="companyName"/></td>
+    <td><input class="form-control" id="companyName" name="companyName"/></td>
     </tr>
     <tr>
     <td><label for="nip">NIP:</label></td>
-    <td><input id="nip" name="nip"/></td>
+    <td><input class="form-control" id="nip" name="nip"/></td>
     </tr>
     <tr>
     <td><label for="street">Ulica:</label></td>
-    <td><input id="street" name="street"/></td>
+    <td><input class="form-control" id="street" name="street"/></td>
     </tr>
     <tr>
     <td><label for="flatNumber">Numer mieszkania:</label></td>
-    <td><input id="flatNumber" name="flatNumber"/></td>
+    <td><input class="form-control" id="flatNumber" name="flatNumber"/></td>
     </tr>
     <tr>
     <td><label for="postalCode">Kod pocztowy:</label></td>
-    <td><input id="postalCode" name="postalCode"/></td>
+    <td><input class="form-control" id="postalCode" name="postalCode"/></td>
     </tr>
     <tr>
     <td><label for="city">Miasto:</label></td>
-    <td><input id="city" name="city"/></td>
+    <td><input class="form-control" id="city" name="city"/></td>
     </tr>
     <tr>
     <td><label for="phoneNumber">Numer telefonu:</label></td>
-    <td><input id="phoneNumber" name="phoneNumber"/></td>
+    <td><input class="form-control" id="phoneNumber" name="phoneNumber"/></td>
     </tr>
     </table>
     </form>
@@ -168,7 +168,7 @@ const performLogout = () => {
     sessionStorage.removeItem("user");
     sessionStorage.removeItem("role");
     sessionStorage.removeItem("token");
-    displayContent();
+    window.location.href="index.html"
 }
 
 

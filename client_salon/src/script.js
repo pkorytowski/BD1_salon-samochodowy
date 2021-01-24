@@ -1,7 +1,5 @@
 const displayContent = () => {
     let container = document.getElementById("content");
-    let navbar = document.getElementById("menu");
-    navbar.innerHTML = '';
     let role = sessionStorage.getItem("role");
     if(role===null){
         container.innerHTML = `
@@ -12,53 +10,18 @@ const displayContent = () => {
         `;
     }
     else if (role==='ROLE_MANAGER'){
-        displayManagerMenu();
+        window.location.href="manager.html";
     }
     else if (role==='ROLE_SELLER'){
-        displaySellerMenu();
+        window.location.href="seller.html";
     }
     else if (role==='ROLE_CLIENT'){
-        displayCustomerMenu();
+        window.location.href="customer.html";
     }
 
 }
 
 const displayCustomerMenu = () => {
-    let menu = document.getElementById("menu");
-    menu.innerHTML = `
-    <ol>
-        <li class="customerMenu"><a href="#" id="showCars">Samochody</a>
-        <ul>
-            <li class="customerMenu"><a href="#" id="showAvailableCars">Poznaj samochody</a></li>
-            <li class="customerMenu"><a href="#" id="showVersions">Poznaj wersje wyposażenia</a></li>
-            <li class="customerMenu"><a href="#" id="addUnit">Skonfiguruj własne auto</a></li>
-            <li class="customerMenu"><a href="#" id="showUnits">Zobacz skonfigurowane samochody</a></li>
-        </ul>
-        </li>
-        <li class="customerMenu"><a href="#" id="showOrders">Zamowienia</a>
-        <ul>
-            <li class="customerMenu"><a href="#" id="showCurrentOrders">Pokaż aktualne zamówienia</a></li>
-        </ul>
-        </li>
-        <li class="customerMenu"><a href="#" id="showRelease">Pokój wydań</a>
-        <ul>
-            <li class="customerMenu"><a href="#" id="showReleaseRoom">Zobacz datę wydania pojazdów</a></li>
-        </ul>
-        </li>
-        <li class="customerMenu"><a href="#" id="showTest">Jazda próbna</a>
-        <ul>
-            <li class="customerMenu"><a href="#" id="showTestDrive">Pokaż umówione jazdy próbne</a></li>
-            <li class="customerMenu"><a href="#" id="showAddTestDrive">Umów się jazdę próbną</a></li>
-        </ul>
-        </li>
-        <li class="customerMenu"><a href="#" id="showUserMenu">Profil</a>
-        <ul>
-            <li class="customerMenu"><a href="#" id="showUpdateProfile">Zmodyfikuj swoje dane</a></li>
-            <li class="customerMenu"><a href="#" id="logout">Wyloguj się</a></li>
-        </ul>
-        </li>
-    </ol>
-    `;
 
     let showAvailableCars = document.getElementById("showAvailableCars");
     showAvailableCars.addEventListener("click", showCarsFullInfoList);
@@ -76,7 +39,7 @@ const displayCustomerMenu = () => {
     showCurrentOrders.addEventListener("click", showCustomerCurrentOrdersPage);
 
     let showReleaseRoom = document.getElementById("showReleaseRoom");
-    showReleaseRoom.addEventListener("click", showReleaseRoomPage);
+    showReleaseRoom.addEventListener("click", showCustomerReleaseRoomPage);
 
     let showTestDrive = document.getElementById("showTestDrive");
     showTestDrive.addEventListener("click", showCustomerTestDrivePage);
@@ -98,42 +61,6 @@ const displayCustomerMenu = () => {
 }
 
 const displaySellerMenu = () => {
-    let menu = document.getElementById("menu");
-    menu.innerHTML = `
-    <ol>
-        <li><a href="#" id="showCars">Samochody</a>
-        <ul>
-            <li><a href="#" id="showAvailableCars">Dostępne typy pojazdów</a></li>
-            <li><a href="#" id="showUnits">Dostępne egzemplarze</a></li>
-            <li><a href="#" id="addUnit">Skonfiguruj auto</a></li>
-        </ul>
-        </li>
-        <li><a href="#" id="showOrders">Zamowienia</a>
-        <ul>
-            <li><a href="#" id="showCurrentOrders">Pokaż aktualne zamówienia</a></li>
-            <li><a href="#" id="showAddOrder">Utwórz nowe zamówienie</a></li>
-        </ul>
-        </li>
-        <li><a href="#" id="showCustomers">Klienci</a>
-        <ul>
-            <li><a href="#" id="showCustomersList">Pokaż klientów</a></li>
-            <li><a href="#" id="showAddCustomer">Dodaj klienta</a></li>
-        </ul>
-        </li>
-        <li><a href="#" id="showRelease">Pokój wydań</a>
-        <ul>
-            <li><a href="#" id="showReleaseRoom">Pokaż aktualne wydania</a></li>
-        </ul>
-        </li>
-        <li><a href="#" id="showTest">Jazda próbna</a>
-        <ul>
-            <li><a href="#" id="showTestDrive">Pokaż aktualne jazdy próbne</a></li>
-            <li><a href="#" id="showAddTestDrive">Dodaj jazdę próbną</a></li>
-        </ul>
-        </li>
-        <li><a href="#" id="logout">Wyloguj się</a></li>
-    </ol>
-    `;
 
     let showAvailableCars = document.getElementById("showAvailableCars");
     showAvailableCars.addEventListener("click", showAvailableCarsList);
@@ -176,50 +103,6 @@ const displaySellerMenu = () => {
 }
 
 const displayManagerMenu = () => {
-    let menu = document.getElementById("menu");
-    menu.innerHTML = `
-    <ol>
-        <li><a href="#" id="showCars">Samochody</a>
-        <ul>
-            <li><a href="#" id="showAvailableCars">Dostępne typy pojazdów</a></li>
-            <li><a href="#" id="addCar">Dodaj nowy typ pojazdu</a></li>
-            <li><a href="#" id="showUnits">Dostępne egzemplarze</a></li>
-            <li><a href="#" id="addUnit">Skonfiguruj auto</a></li>
-        </ul>
-        </li>
-        <li><a href="#" id="showOrders">Zamowienia</a>
-        <ul>
-            <li><a href="#" id="showCurrentOrders">Pokaż aktualne zamówienia</a></li>
-            <li><a href="#" id="showAddOrder">Utwórz nowe zamówienie</a></li>
-        </ul>
-        </li>
-        <li><a href="#" id="showCustomers">Klienci</a>
-        <ul>
-            <li><a href="#" id="showCustomersList">Pokaż klientów</a></li>
-            <li><a href="#" id="showAddCustomer">Dodaj klienta</a></li>
-        </ul>
-        </li>
-        <li><a href="#" id="showEmployees">Pracownicy</a>
-        <ul>
-            <li><a href="#" id="showEmployeesList">Pokaż pracowników</a></li>
-            <li><a href="#" id="showAddEmployee">Dodaj pracownika</a></li>
-        </ul>
-        </li>
-        <li><a href="#" id="showRelease">Pokój wydań</a>
-        <ul>
-            <li><a href="#" id="showReleaseRoom">Pokaż aktualne wydania</a></li>
-            <li><a href="#" id="showAddRelease">Dodaj nowe wydanie</a></li>
-        </ul>
-        </li>
-        <li><a href="#" id="showTest">Jazda próbna</a>
-        <ul>
-            <li><a href="#" id="showTestDrive">Pokaż aktualne jazdy próbne</a></li>
-            <li><a href="#" id="showAddTestDrive">Dodaj jazdę próbną</a></li>
-        </ul>
-        </li>
-        <li><a href="#" id="logout">Wyloguj się</a></li>
-    </ol>
-    `;
 
     let showAvailableCars = document.getElementById("showAvailableCars");
     showAvailableCars.addEventListener("click", showAvailableCarsList);
@@ -268,7 +151,7 @@ const displayManagerMenu = () => {
 
     let container = document.getElementById("content");
     container.innerHTML = `
-    <h3> Wybierz jedną z poniższych opcji</h3>
+    <h3> Wybierz jedną z powyższych opcji</h3>
     `;
 
 }

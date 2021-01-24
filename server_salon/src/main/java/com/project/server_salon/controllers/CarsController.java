@@ -9,6 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Map;
 
+
 @RequestMapping(path="/cars")
 @RestController
 public class CarsController {
@@ -27,24 +28,39 @@ public class CarsController {
     }
 
     @GetMapping("/getAll")
-    public ArrayList<Car> getAll(){
-        ArrayList<Car> cars = new ArrayList<>();
+    public ArrayList<CarFull> getAll(){
+        ArrayList<CarFull> cars = new ArrayList<>();
         if(!getConn()){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error with connection with db");
         }
 
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.samochody_widok", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT s.*, m.*, e.id_silnik, e.nazwa as nazwa_s, e.moc, e.liczba_cylindrow, e.emisja_co2, e.pojemnosc_skokowa, e.rodzaj_paliwa, e.cena as cena_s FROM salon.samochody_widok s join salon.modele m on s.id_modelu=m.id_modelu join salon.silnik e on e.id_silnik=s.id_silnik order by s.aktywny desc, m.nazwa", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
-                    cars.add(new Car(rs.getInt("id_samochodu"),
+                    cars.add(new CarFull(rs.getInt("id_samochodu"),
                             rs.getInt("id_silnik"),
-                            rs.getString("silnik"),
+                            new Engine(rs.getInt("id_silnik"),
+                                    rs.getString("nazwa_s"),
+                                    rs.getDouble("moc"),
+                                    rs.getInt("liczba_cylindrow"),
+                                    rs.getDouble("emisja_co2"),
+                                    rs.getDouble("pojemnosc_skokowa"),
+                                    rs.getString("rodzaj_paliwa"),
+                                    rs.getDouble("cena_s")),
                             rs.getInt("id_wersje_wyposazenia"),
                             rs.getString("wersja"),
                             rs.getInt("id_modelu"),
-                            rs.getString("model"),
+                            new Model(rs.getInt("id_modelu"),
+                                    rs.getString("nazwa"),
+                                    rs.getString("typ_nadwozia"),
+                                    rs.getString("opis"),
+                                    rs.getInt("dlugosc"),
+                                    rs.getInt("szerokosc"),
+                                    rs.getInt("wysokosc"),
+                                    rs.getInt("pojemnosc_bagaznika"),
+                                    rs.getDouble("cena_bazowa")),
                             rs.getInt("rok_modelowy"),
                             rs.getDouble("cena"),
                             rs.getInt("aktywny")));
@@ -61,41 +77,7 @@ public class CarsController {
     }
 
     @GetMapping("/getActive")
-    public ArrayList<Car> getActive(){
-        ArrayList<Car> cars = new ArrayList<>();
-        if(!getConn()){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error with connection with db");
-        }
-
-        if (c!=null){
-            try{
-                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.samochody_widok where aktywny=1", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
-                ResultSet rs = stmt.executeQuery();
-                while (rs.next())  {
-                    cars.add(new Car(rs.getInt("id_samochodu"),
-                            rs.getInt("id_silnik"),
-                            rs.getString("silnik"),
-                            rs.getInt("id_wersje_wyposazenia"),
-                            rs.getString("wersja"),
-                            rs.getInt("id_modelu"),
-                            rs.getString("model"),
-                            rs.getInt("rok_modelowy"),
-                            rs.getDouble("cena"),
-                            rs.getInt("aktywny")));
-                }
-                rs.close();
-                stmt.close();
-                c.close();
-            }
-            catch (SQLException e){
-                System.out.println(e.getMessage());
-            }
-        }
-        return cars;
-    }
-
-    @GetMapping("/getFullInfo")
-    public ArrayList<CarFull> getFullInfo(){
+    public ArrayList<CarFull> getActive(){
         ArrayList<CarFull> cars = new ArrayList<>();
         if(!getConn()){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error with connection with db");
@@ -142,6 +124,8 @@ public class CarsController {
         }
         return cars;
     }
+
+
 
     @PostMapping("/add")
     public void add(@RequestBody Map<String, String> request){

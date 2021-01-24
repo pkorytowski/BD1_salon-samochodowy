@@ -9,9 +9,9 @@ const showAvailableCarsList = () => {
 
         let str = '';
         if (cars.length!=0){
-            str += '<table>';
+            str += '<table class="infoTable" style="width: 70%;">';
             let role = sessionStorage.getItem("role");
-            str += '<tr><td>Model</td><td>Wersja wyposażenia</td><td>Rok modelowy</td><td>Cena bazowa</td><td>Status</td></tr>';
+            str += '<tr><td>Model</td><td>Nadwozie</td><td>Wersja wyposażenia</td><td>Silnik</td><td>Rok modelowy</td><td>Cena bazowa</td><td>Status</td><td></td><td></td></tr>';
             for(let i=0; i<cars.length; i++){
                 let status, btnText;
                 if(cars[i].active==1){
@@ -23,9 +23,10 @@ const showAvailableCarsList = () => {
                     btnText = 'aktywuj';
                 }
                 str += '<tr>';
-                str += '<td>' + cars[i].model + '</td>';
+                str += '<td>' + cars[i].model.name + '</td>';
+                str += '<td>' + cars[i].model.chassis + '</td>';
                 str += '<td>' + cars[i].version + '</td>';
-                str += '<td>' + cars[i].engine + '</td>';
+                str += '<td>' + cars[i].engine.name + '</td>';
                 str += '<td>' + cars[i].year + '</td>';
                 str += '<td>' + cars[i].value + '</td>';
                 str += '<td>' + status + '</td>';
@@ -40,21 +41,34 @@ const showAvailableCarsList = () => {
     });
 }
 
+
 const showAddCarPage = async () => {
     let container = document.getElementById("content");
     let models = await getModelsOptionList();
     let versions = await getActiveVersionsOptionsList();
     let engines = await getEnginesOptionsList();
     container.innerHTML = `
-        <label for="model">Model</label>
-        <select id="model" name="model">`+ models +`</select></br>
-        <label for="version">Wersja wyposazenia</label>
-        <select id="version" name="version">`+ versions +`</select></br>
-        <label for="engine">Silnik</label>
-        <select id="engine" name="engine">`+ engines +`</select></br>
-        <label for="year">Rok modelowy</label>
-        <input id="year" name="year" type="number" value="2021" size="4"/></br>
-        <button id="addNewCarBtn">Dodaj</button>
+        <table id="unitTable">
+        <tr>
+        <td><label for="model">Model:</label></td>
+        <td><select class="form-control" id="model" name="model">`+ models +`</select></td>
+        </tr>
+        <tr>
+        <td><label for="version">Wersja wyposazenia:</label></td>
+        <td><select class="form-control" id="version" name="version">`+ versions +`</select></td>
+        </tr>
+        <tr>
+        <td><label for="engine">Silnik:</label></td>
+        <td><select class="form-control" id="engine" name="engine">`+ engines +`</select></td>
+        </tr>
+        <tr>
+        <td><label for="year">Rok modelowy:</label></td>
+        <td><input class="form-control" id="year" name="year" type="number" value="2021" size="4"/></td>
+        </tr>
+        <tr>
+        <td colspan="2" style="text-align: center;"><button id="addNewCarBtn">Dodaj</button></td>
+        </tr>
+        </table>
     `;
 
     let addBtn = document.getElementById("addNewCarBtn");
@@ -88,7 +102,7 @@ const getEnginesOptionsList = async () => {
     let data = await getEnginesList();
     let str = '';
     for(let i=0; i<data.length; i++){
-        str += '<option value="'+data[i].id_silnik+'">'+data[i].nazwa+'</option>';
+        str += '<option value="'+data[i].id_engine+'">'+data[i].name+'</option>';
     }
     return str;
 }
@@ -102,7 +116,7 @@ const getModelsOptionList = async () => {
     let data = await getModelsList();
     let str = '';
     for(let i=0; i<data.length; i++){
-        str += '<option value="'+data[i].id_modelu+'">'+data[i].nazwa+'</option>';
+        str += '<option value="'+data[i].id_model+'">'+data[i].name+' | '+data[i].chassis+'</option>';
     }
     return str;
 }
@@ -116,11 +130,10 @@ const getActiveVersionsOptionsList = async () => {
     let data = await getActiveVersions();
     let str = '';
     for(let i=0; i<data.length; i++){
-        str += '<option value="'+data[i].id_wersje_wyposazenia+'">'+data[i].nazwa+'</option>';
+        str += '<option value="'+data[i].id_version+'">'+data[i].name+'</option>';
     }
     return str;
 }
-
 
 const getActiveCarList = async () => {
     let data = await getData('/cars/getActive');
@@ -131,7 +144,7 @@ const getCarOptionList = async () => {
     let data = await getActiveCarList();
     let str = '';
     for(let i=0; i<data.length; i++){
-        str += '<option value="'+data[i].id_car+'">'+data[i].model+' | '+data[i].version+' | ' +data[i].engine+'</option>';
+        str += '<option value="'+data[i].id_car+'">'+data[i].model.name+ ' | '+data[i].model.chassis+' | '+data[i].version+' | ' +data[i].engine.name+'</option>';
     }
     return str;
 }
@@ -192,7 +205,7 @@ const deleteCar = (id) => {
 const showCarsFullInfoList = () => {
     let container = document.getElementById("content");
     let cars = [];
-    getData("/cars/getFullInfo").then(data => {
+    getData("/cars/getActive").then(data => {
         for(let i=0;i<data.length;i++){
             cars.push(data[i]);
         }
@@ -213,7 +226,7 @@ const showCarsFullInfoList = () => {
                 str += '<td colspan="6"><table>';
                 str += '<tr>';
                 str += '<td>Opis:</td>'
-                str += '<td>' + cars[i].model.description + '</td>';
+                str += '<td style="text-align: justify;">' + cars[i].model.description + '</td>';
                 str += '</tr>';
                 str += '<tr>';
                 str += '<td>Wymiary (dł x szer x wys) [mm]:</td>'
@@ -283,7 +296,7 @@ const showVersionsPage = () => {
                 for(let j=0; j<versions[i].equipmentList.length; j++) {
                     str += '<tr>';
                     str += '<td>' + versions[i].equipmentList[j].name + '</td>';
-                    str += '<td>' + versions[i].equipmentList[j].description + '</td>';
+                    str += '<td class="justifyTd">' + versions[i].equipmentList[j].description + '</td>';
                     str += '</tr>';
                 }
                 str += '</table></td>';

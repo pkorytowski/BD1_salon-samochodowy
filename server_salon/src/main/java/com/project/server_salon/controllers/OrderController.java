@@ -35,7 +35,7 @@ public class OrderController {
         }
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.zamowienia_widok where status<>'zakonczono'", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.zamowienia_widok where status<>'transakcja zakonczona'", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     orders.add(new Order(rs.getInt("id_zamowienia"),
@@ -88,7 +88,7 @@ public class OrderController {
         }
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.zamowienia_widok where id_klienta=? and status<>'zakonczono'", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM salon.zamowienia_widok where id_klienta=? and status<>'transakcja zakonczona'", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 stmt.setInt(1, id_customer);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {

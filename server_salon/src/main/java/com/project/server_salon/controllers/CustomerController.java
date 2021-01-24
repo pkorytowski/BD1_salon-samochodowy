@@ -34,7 +34,7 @@ public class CustomerController {
         }
         if (c!=null){
             try{
-                PreparedStatement stmt = c.prepareStatement("SELECT id_klienta, imie, nazwisko, nazwa, NIP, ulica, nr_domu, kod_pocztowy, miejscowosc, telefon, email FROM salon.klienci", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = c.prepareStatement("SELECT id_klienta, imie, nazwisko, nazwa, NIP, ulica, nr_domu, kod_pocztowy, miejscowosc, telefon, email FROM salon.klienci order by nazwisko, imie", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next())  {
                     customers.add(new Customer(rs.getInt("id_klienta"),
