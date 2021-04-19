@@ -1,11 +1,10 @@
-package com.project.server_salon;
+package com.mentorvradmin.demo;
 
-import com.project.server_salon.auth.JWTAuthorizationFilter;
+import com.mentorvradmin.demo.security.APIKeyAuthenticationFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -15,28 +14,23 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @SpringBootApplication
-public class ServerSalonApplication {
+public class MentorVrAdminApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ServerSalonApplication.class, args);
+        SpringApplication.run(MentorVrAdminApplication.class, args);
     }
 
     @EnableWebSecurity
     @Configuration
-    class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
         @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.cors().and().csrf().disable()
-                    .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+        protected void configure(HttpSecurity http) throws Exception{
+            http.csrf().disable()
                     .authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/models/getAll").hasRole("MANAGER")
-                    //.antMatchers(HttpMethod.POST, "/models/delete").hasRole("MANAGER")
-                    //.antMatchers(HttpMethod.POST, "/engines/add").hasRole("MANAGER")
-                    //.antMatchers(HttpMethod.POST, "/engines/delete").hasRole("MANAGER")
-                    .antMatchers(HttpMethod.POST, "/login/*").permitAll()
-                    .antMatchers(HttpMethod.POST, "/customers/add").permitAll()
-                    .anyRequest().authenticated();
+                    .anyRequest().authenticated()
+                    .and()
+                    .addFilterBefore(new APIKeyAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         }
 
         @Bean
@@ -45,9 +39,5 @@ public class ServerSalonApplication {
             source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
             return source;
         }
-
     }
-
-
-
 }
